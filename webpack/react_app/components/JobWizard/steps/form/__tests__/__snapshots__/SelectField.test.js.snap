@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectField rendering renders with props 1`] = `
+<FormGroup
+  fieldId="field-id"
+  label="grouped select"
+>
+  <Select
+    aria-label="Your title"
+    aria-labelledby=""
+    className="without_select2"
+    clearSelectionsAriaLabel="Clear all"
+    createText="Create"
+    customBadgeText={null}
+    customContent={null}
+    direction="down"
+    favorites={Array []}
+    favoritesLabel="Favorites"
+    hasInlineFilter={false}
+    id="horzontal-form-title"
+    inlineFilterPlaceholderText={null}
+    inputIdPrefix=""
+    isCreatable={false}
+    isDisabled={false}
+    isGrouped={false}
+    isOpen={false}
+    isPlain={false}
+    maxHeight="45vh"
+    menuAppendTo="inline"
+    name="horizontal-form-title"
+    noResultsFoundText="No results found"
+    onClear={[Function]}
+    onCreateOption={[Function]}
+    onFilter={null}
+    onSelect={[Function]}
+    onToggle={[Function]}
+    ouiaSafe={true}
+    placeholderText=""
+    removeSelectionAriaLabel="Remove"
+    selections="Commands"
+    toggleAriaLabel="Options menu"
+    toggleIcon={null}
+    toggleId={null}
+    typeAheadAriaLabel=""
+    variant="single"
+    width=""
+  >
+    <SelectOption
+      className=""
+      component="button"
+      index={0}
+      inputId=""
+      isChecked={false}
+      isDisabled={false}
+      isFavorite={null}
+      isNoResultsOption={false}
+      isPlaceholder={false}
+      isSelected={false}
+      key="0"
+      keyHandler={[Function]}
+      onClick={[Function]}
+      sendRef={[Function]}
+      value="Commands"
+    />
+  </Select>
+</FormGroup>
+`;

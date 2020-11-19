@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GroupedSelectField rendering renders with props 1`] = `
+<FormGroup
+  fieldId="field-id"
+  label="grouped select"
+>
+  <Select
+    aria-label=""
+    aria-labelledby=""
+    className="without_select2"
+    clearSelectionsAriaLabel="Clear all"
+    createText="Create"
+    customBadgeText={null}
+    customContent={null}
+    direction="down"
+    favorites={Array []}
+    favoritesLabel="Favorites"
+    hasInlineFilter={false}
+    inlineFilterPlaceholderText={null}
+    inputIdPrefix=""
+    isCreatable={false}
+    isDisabled={false}
+    isGrouped={true}
+    isOpen={false}
+    isPlain={false}
+    menuAppendTo="inline"
+    noResultsFoundText="No results found"
+    onClear={[Function]}
+    onCreateOption={[Function]}
+    onFilter={null}
+    onSelect={[Function]}
+    onToggle={[Function]}
+    ouiaSafe={true}
+    placeholderText=""
+    removeSelectionAriaLabel="Remove"
+    selections={170}
+    toggleAriaLabel="Options menu"
+    toggleIcon={null}
+    toggleId={null}
+    typeAheadAriaLabel=""
+    variant="typeahead"
+    width=""
+  >
+    <SelectGroup
+      key="0"
+      label="Ansible"
+    >
+      <SelectOption
+        className=""
+        component="button"
+        index={0}
+        inputId=""
+        isChecked={false}
+        isDisabled={false}
+        isFavorite={null}
+        isNoResultsOption={false}
+        isPlaceholder={false}
+        isSelected={false}
+        key="0"
+        keyHandler={[Function]}
+        onClick={[Function]}
+        sendRef={[Function]}
+        value="Ansible Roles - Ansible Default"
+      />
+      <SelectOption
+        className=""
+        component="button"
+        index={0}
+        inputId=""
+        isChecked={false}
+        isDisabled={false}
+        isFavorite={null}
+        isNoResultsOption={false}
+        isPlaceholder={false}
+        isSelected={false}
+        key="1"
+        keyHandler={[Function]}
+        onClick={[Function]}
+        sendRef={[Function]}
+        value="Ansible Roles - Install from git"
+      />
+    </SelectGroup>
+  </Select>
+</FormGroup>
+`;

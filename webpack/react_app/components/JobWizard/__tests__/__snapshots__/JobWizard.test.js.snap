@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JobWizard rendering renders  1`] = `
+<Wizard
+  appendTo={null}
+  backButtonText="Back"
+  cancelButtonText="Cancel"
+  className=""
+  closeButtonAriaLabel="Close"
+  description=""
+  footer={null}
+  hasNoBodyPadding={false}
+  height="70vh"
+  hideClose={false}
+  mainAriaLabel={null}
+  mainAriaLabelledBy={null}
+  navAriaLabel="Run Job steps"
+  navAriaLabelledBy={null}
+  nextButtonText="Next"
+  onBack={null}
+  onClose={[Function]}
+  onGoToStep={null}
+  onNext={null}
+  startAtStep={1}
+  steps={
+    Array [
+      Object {
+        "component": <ConnectedCategoryAndTemplate
+          category=""
+          jobTemplate={null}
+          setCategory={[Function]}
+          setJobTemplate={[Function]}
+        />,
+        "name": "Category and template",
+      },
+      Object {
+        "canJumpTo": false,
+        "component": <p>
+          TargetHosts 
+        </p>,
+        "name": "Target hosts",
+      },
+      Object {
+        "canJumpTo": false,
+        "component": <p>
+           AdvancedFields 
+        </p>,
+        "name": "Advanced fields",
+      },
+      Object {
+        "canJumpTo": false,
+        "component": <p>
+          Schedule
+        </p>,
+        "name": "Schedule",
+      },
+      Object {
+        "canJumpTo": false,
+        "component": <p>
+          ReviewDetails
+        </p>,
+        "name": "Review details",
+        "nextButtonText": "Run",
+      },
+    ]
+  }
+  title={null}
+  width={null}
+/>
+`;
+
+exports[`JobWizardPage rendering renders  1`] = `
+<PageLayout
+  breadcrumbOptions={
+    Object {
+      "breadcrumbItems": Array [
+        Object {
+          "caption": "Jobs",
+          "url": "/jobs",
+        },
+        Object {
+          "caption": "Run job",
+        },
+      ],
+    }
+  }
+  header="Run job"
+  searchable={false}
+>
+  <Title
+    headingLevel="h2"
+    size="2xl"
+  >
+    Run job
+  </Title>
+  <Divider
+    component="div"
+  />
+  <JobWizard />
+</PageLayout>
+`;
