@@ -8,6 +8,16 @@ class UiJobWizardController < ::Api::V2::BaseController
     render :json => {:job_categories =>job_categories}
   end
 
+  def template
+    job_template = JobTemplate.find_by(id: params[:id])
+    render :json => {
+      :job_template => job_template,
+      :effective_user => job_template.effective_user,
+      :template_inputs_with_foreign => map_template_inputs(job_template.template_inputs_with_foreign),
+      :generate_description_format => job_template.generate_description_format,
+    }
+  end
+
   def resource_class
     JobTemplate
   end
@@ -15,4 +25,9 @@ class UiJobWizardController < ::Api::V2::BaseController
   def action_permission
     :view_job_templates
   end
+
+  def map_template_inputs(template_inputs_with_foreign)
+    template_inputs_with_foreign.map { |input| input.attributes.merge({:resource_type => input.resource_type&.tableize }) }
+  end
+
 end

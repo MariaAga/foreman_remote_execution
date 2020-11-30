@@ -2,10 +2,21 @@ import React, { useState } from 'react';
 import { Wizard } from '@patternfly/react-core';
 import { translate as __ } from 'foremanReact/common/I18n';
 import CategoryAndTemplate from './steps/CategoryAndTemplate/';
+import AdvancedFields from './steps/AdvancedFields/';
 
 export const JobWizard = () => {
   const [jobTemplate, setJobTemplate] = useState(null);
   const [category, setCategory] = useState('');
+  const [advancedValue, setAdvancedValue] = useState({
+    templateValues: {},
+    effectiveUserValue: '',
+    timeoutToKill: '',
+    password: '',
+    keyPassphrase: '',
+    effectiveUserPassword: '',
+    concurrencyLevel: '',
+    timeSpan: '',
+  });
   const steps = [
     {
       name: __('Category and template'),
@@ -25,8 +36,15 @@ export const JobWizard = () => {
     },
     {
       name: __('Advanced fields'),
-      component: <p> AdvancedFields </p>,
-      canJumpTo: !!jobTemplate,
+      component: (
+        <AdvancedFields
+          // jobTemplateID={jobTemplate}
+          jobTemplateID={197}
+          advancedValue={advancedValue}
+          setAdvancedValue={setAdvancedValue}
+        />
+      ),
+      // canJumpTo: !!jobTemplate,
     },
     {
       name: __('Schedule'),
@@ -43,3 +61,5 @@ export const JobWizard = () => {
   const title = __('Run Job');
   return <Wizard navAriaLabel={`${title} steps`} steps={steps} height="70vh" />;
 };
+
+export default JobWizard;

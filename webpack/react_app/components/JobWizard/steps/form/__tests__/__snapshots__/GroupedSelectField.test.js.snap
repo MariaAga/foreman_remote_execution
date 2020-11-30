@@ -8,6 +8,7 @@ exports[`GroupedSelectField rendering renders with props 1`] = `
   <Select
     aria-label=""
     aria-labelledby=""
+    chipGroupComponent={null}
     className="without_select2"
     clearSelectionsAriaLabel="Clear all"
     createText="Create"

@@ -4,10 +4,12 @@ exports[`SelectField rendering renders with props 1`] = `
 <FormGroup
   fieldId="field-id"
   label="grouped select"
+  labelIcon={null}
 >
   <Select
     aria-label="Your title"
     aria-labelledby=""
+    chipGroupComponent={null}
     className="without_select2"
     clearSelectionsAriaLabel="Clear all"
     createText="Create"

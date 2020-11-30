@@ -143,7 +143,7 @@ module ForemanRemoteExecution
           :url_hash => { :controller => 'job_wizard', :action => :index },
           caption: N_('Job wizard'),
           parent: :lab_features_menu,
-          :url => 'experimental/job_wizard',
+          :url => '/experimental/job_wizard',
           after: :host_wizard
 
         register_custom_status HostStatus::ExecutionStatus

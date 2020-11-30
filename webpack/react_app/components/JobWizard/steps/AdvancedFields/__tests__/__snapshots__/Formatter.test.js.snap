@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`formatter datetime 1`] = `
+<span>
+  DateTime here
+</span>
+`;
+
+exports[`formatter search 1`] = `
+<Fragment>
+  <FormGroup
+    fieldId="template field"
+    label="template field"
+    labelIcon={null}
+  >
+    <SearchBar
+      data={
+        Object {
+          "autocomplete": Object {
+            "id": "template field",
+            "url": "/ansible_roles/auto_complete_search",
+            "useKeyShortcuts": true,
+          },
+          "controller": "ansible_roles",
+        }
+      }
+      key="template field"
+    />
+  </FormGroup>
+</Fragment>
+`;
+
+exports[`formatter select 1`] = `
+<SelectField
+  fieldId="template field"
+  key="template field"
+  label="template field"
+  options={
+    Array [
+      "a",
+      "b",
+    ]
+  }
+  setValue={[Function]}
+  value={null}
+/>
+`;
+
+exports[`formatter text 1`] = `
+<FormGroup
+  fieldId="template field"
+  label="template field"
+  labelIcon={null}
+>
+  <TextInput
+    className="masked-input"
+    id="template field"
+    key="template field"
+    onChange={[Function]}
+    rows={2}
+    type="text"
+    value="some default"
+  />
+</FormGroup>
+`;

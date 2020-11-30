@@ -1,15 +1,29 @@
 import React, { useState } from 'react';
 import { FormGroup, Select, SelectOption } from '@patternfly/react-core';
 import PropTypes from 'prop-types';
+import { helpLabel } from './FormHelpers';
 
-export const SelectField = ({ label, fieldId, options, value, setValue }) => {
+export const SelectField = ({
+  label,
+  fieldId,
+  options,
+  value,
+  setValue,
+  labelText,
+  isRequired
+}) => {
   const onSelect = (event, selection) => {
     setValue(selection);
     setIsOpen(false);
   };
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <FormGroup label={label} fieldId={fieldId}>
+    <FormGroup
+      label={label}
+      fieldId={fieldId}
+      labelIcon={helpLabel(labelText)}
+      isRequired={isRequired}
+    >
       <Select
         selections={value}
         onSelect={onSelect}
