@@ -6,13 +6,13 @@ exports[`formatter render date input 1`] = `
     Object {
       "children": <ForwardRef
         className={null}
-        id="date adv"
+        id="date-adv"
         onChange={[Function]}
         placeholder="YYYY-mm-dd HH:MM"
         required={false}
         type="text"
       />,
-      "fieldId": "date adv",
+      "fieldId": "date-adv",
       "isRequired": false,
       "label": "date adv",
       "labelIcon": null,
@@ -37,7 +37,7 @@ exports[`formatter render search input 1`] = `
   <TemplateSearchField
     controller="foreman_tasks/tasks"
     defaultValue=""
-    key="search adv"
+    key="search-adv"
     labelText={null}
     name="search adv"
     required={false}
@@ -62,7 +62,7 @@ exports[`formatter render search input 1`] = `
   >
     <mockConstructor
       className="foreman-search-field"
-      fieldId="search adv"
+      fieldId="search-adv"
       isRequired={false}
       label="search adv"
       labelIcon={null}
@@ -85,7 +85,7 @@ exports[`formatter render search input 1`] = `
               onSearch={[Function]}
             />,
             "className": "foreman-search-field",
-            "fieldId": "search adv",
+            "fieldId": "search-adv",
             "isRequired": false,
             "label": "search adv",
             "labelIcon": null,
@@ -99,7 +99,7 @@ exports[`formatter render search input 1`] = `
 
 exports[`formatter render select input 1`] = `
 <mockConstructor
-  fieldId="adv plain search"
+  fieldId="adv-plain-search"
   label="adv plain search"
 >
   <mockConstructor
@@ -138,12 +138,12 @@ exports[`formatter render text input 1`] = `
     Object {
       "children": <ForwardRef
         className="masked-input"
-        id="plain adv hidden"
+        id="plain-adv-hidden"
         onChange={[Function]}
         required={true}
         rows={2}
       />,
-      "fieldId": "plain adv hidden",
+      "fieldId": "plain-adv-hidden",
       "isRequired": true,
       "label": "plain adv hidden",
       "labelIcon": <Popover
