@@ -27,7 +27,7 @@ export const SelectField = ({ label, fieldId, options, value, setValue }) => {
   );
 };
 SelectField.propTypes = {
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   fieldId: PropTypes.string.isRequired,
   options: PropTypes.array,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -35,6 +35,7 @@ SelectField.propTypes = {
 };
 
 SelectField.defaultProps = {
+  label: null,
   options: [],
   value: null,
 };

@@ -1,4 +1,9 @@
 .job-wizard {
+
+  .wizard-title {
+    margin-bottom: 25px;
+  }
+
   .pf-c-wizard__main {
     z-index: calc(
       var(--pf-c-wizard__footer--ZIndex) + 1
@@ -37,5 +42,9 @@
         }
       }
     }
+  }
+
+  .hosts-chip-group {
+    margin-top: 8px;
   }
 }

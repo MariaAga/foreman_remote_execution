@@ -7,26 +7,31 @@ import history from 'foremanReact/history';
 import CategoryAndTemplate from './steps/CategoryAndTemplate/';
 import { AdvancedFields } from './steps/AdvancedFields/AdvancedFields';
 import { JOB_TEMPLATE } from './JobWizardConstants';
+import HostsAndInputs from './steps/HostsAndInputs/';
 import './JobWizard.scss';
 
 export const JobWizard = () => {
   const [jobTemplateID, setJobTemplateID] = useState(null);
   const [category, setCategory] = useState('');
   const [advancedValue, setAdvancedValue] = useState({});
+  const [templateValues, setTemplateValues] = useState({}); // TODO use templateValues in advanced fields - description
+  const [selectedHosts, setSelectedHosts] = useState(['host1', 'host2']);
   const dispatch = useDispatch();
 
   const setDefaults = useCallback(
     response => {
       const responseJob = response.data;
-      const templateValues = {};
+      const defaultAdvancedTemplateValues = {};
+      const defaultTemplateValues = {};
       const inputs = responseJob.template_inputs_with_foreign;
       if (inputs) {
-        inputs
-          .filter(input => input.advanced)
-          .forEach(input => {
-            templateValues[input.name] = input?.default || '';
-          });
+        inputs.forEach(input => {
+          if (input.advanced)
+            defaultAdvancedTemplateValues[input.name] = input?.default || '';
+          else defaultTemplateValues[input.name] = input?.default || '';
+        });
       }
+      setTemplateValues(defaultTemplateValues);
       setAdvancedValue({
         ...advancedValue,
         effectiveUserValue: responseJob.effective_user?.value || '',
@@ -34,7 +39,7 @@ export const JobWizard = () => {
         templateValues,
       });
     },
-    [advancedValue]
+    [advancedValue, templateValues]
   );
   useEffect(() => {
     if (jobTemplateID) {
@@ -46,6 +51,7 @@ export const JobWizard = () => {
         })
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobTemplateID, dispatch]);
 
   const steps = [
@@ -61,8 +67,15 @@ export const JobWizard = () => {
       ),
     },
     {
-      name: __('Target hosts'),
-      component: <p>TargetHosts </p>,
+      name: __('Target hosts and inputs'),
+      component: (
+        <HostsAndInputs
+          templateValues={templateValues}
+          setTemplateValues={setTemplateValues}
+          selectedHosts={selectedHosts}
+          setSelectedHosts={setSelectedHosts}
+        />
+      ),
       canJumpTo: !!jobTemplateID,
     },
     {

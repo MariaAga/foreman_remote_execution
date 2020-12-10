@@ -32,10 +32,18 @@ exports[` 1`] = `
           },
           Object {
             "canJumpTo": false,
-            "component": <p>
-              TargetHosts 
-            </p>,
-            "name": "Target hosts",
+            "component": <HostsAndInputs
+              selectedHosts={
+                Array [
+                  "host1",
+                  "host2",
+                ]
+              }
+              setSelectedHosts={[Function]}
+              setTemplateValues={[Function]}
+              templateValues={Object {}}
+            />,
+            "name": "Target hosts and inputs",
           },
           Object {
             "canJumpTo": false,
