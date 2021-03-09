@@ -6,7 +6,7 @@ import { ScheduleType } from '../ScheduleType';
 jest.spyOn(patternfly, 'FormGroup');
 patternfly.FormGroup.mockImplementation(props => <div props={props} />);
 const fixtures = {
-  renders: {},
+  renders: { isFuture: false, setIsFuture: jest.fn() },
 };
 
 describe('ScheduleType', () => {

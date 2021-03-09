@@ -3,6 +3,8 @@ import { Popover } from '@patternfly/react-core';
 import { HelpIcon } from '@patternfly/react-icons';
 import { translate as __ } from 'foremanReact/common/I18n';
 
+export const isNumber = newValue => !Number.isNaN(Number(newValue));
+
 export const helpLabel = (text, id) => {
   if (!text) return null;
   return (

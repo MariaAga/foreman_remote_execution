@@ -1,35 +1,73 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`StartEndDates renders 1`] = `
+exports[`StartEndDates renders isNeverEnds false 1`] = `
 <Fragment>
   <mockConstructor
+    className="start-date"
     fieldId="start-date"
     label="Starts"
   >
-    <TextInput
-      id="start-date"
-      onChange={[Function]}
-      placeholder="mm/dd/yy, hh:mm UTC"
-      type="text"
-      value=""
+    <DateTimePicker
+      dateTime=""
+      isDisabled={false}
+      setDateTime={[MockFunction]}
     />
   </mockConstructor>
   <mockConstructor
+    className="end-date"
     fieldId="end-date"
+    helperTextInvalid="End time needs to be after start time"
     label="Ends"
+    validated="success"
   >
-    <TextInput
-      id="end-date"
+    <DateTimePicker
+      dateTime="some-end-date"
       isDisabled={false}
-      onChange={[Function]}
-      placeholder="mm/dd/yy, hh:mm UTC"
-      type="text"
-      value="some-end-date"
+      setDateTime={[MockFunction]}
     />
     <Checkbox
       className=""
       id="never-ends"
       isChecked={false}
+      isDisabled={false}
+      isValid={true}
+      label="Never ends"
+      name="never-ends"
+      onChange={[Function]}
+    />
+  </mockConstructor>
+</Fragment>
+`;
+
+exports[`StartEndDates renders isNeverEnds true 1`] = `
+<Fragment>
+  <mockConstructor
+    className="start-date"
+    fieldId="start-date"
+    label="Starts"
+  >
+    <DateTimePicker
+      dateTime=""
+      isDisabled={false}
+      setDateTime={[MockFunction]}
+    />
+  </mockConstructor>
+  <mockConstructor
+    className="end-date"
+    fieldId="end-date"
+    helperTextInvalid="End time needs to be after start time"
+    label="Ends"
+    validated="success"
+  >
+    <DateTimePicker
+      dateTime="some-end-date"
+      isDisabled={true}
+      setDateTime={[MockFunction]}
+    />
+    <Checkbox
+      className=""
+      id="never-ends"
+      isChecked={true}
       isDisabled={false}
       isValid={true}
       label="Never ends"
