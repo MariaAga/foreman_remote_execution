@@ -17,6 +17,7 @@ export const SelectField = ({ label, fieldId, options, value, setValue }) => {
         isOpen={isOpen}
         className="without_select2"
         maxHeight="45vh"
+        menuAppendTo={() => document.body}
       >
         {options.map((option, index) => (
           <SelectOption key={index} value={option} />

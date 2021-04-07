@@ -41,7 +41,6 @@ const ConnectedCategoryAndTemplate = ({
   }, [jobCategoriesStatus, dispatch, setCategory]);
 
   const jobCategories = useSelector(selectJobCategories);
-
   useEffect(() => {
     if (category) {
       const templatesUrlObject = new URI(templatesUrl);
