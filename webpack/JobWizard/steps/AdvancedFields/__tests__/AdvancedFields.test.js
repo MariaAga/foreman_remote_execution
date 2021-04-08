@@ -10,7 +10,10 @@ patternfly.FormGroup.mockImplementation(props => (
   <div>{props.navAriaLabel}</div>
 ));
 const mockStore = configureMockStore([]);
-const store = mockStore({ effective_user: { overridable: true } });
+const store = mockStore({
+  effective_user: { overridable: true },
+  template_inputs_with_foreign: [{}],
+});
 describe('AdvancedFields', () => {
   it('rendring', () => {
     const component = mount(

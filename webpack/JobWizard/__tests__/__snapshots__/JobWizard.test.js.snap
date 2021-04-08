@@ -16,7 +16,7 @@ exports[` 1`] = `
   <JobWizard>
     <mockConstructor
       className="job-wizard"
-      height="70vh"
+      height="100%"
       navAriaLabel="Run Job steps"
       onClose={[Function]}
       steps={

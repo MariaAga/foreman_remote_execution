@@ -21,6 +21,13 @@ api.get.mockImplementation(({ handleSuccess, ...action }) => {
     handleSuccess &&
       handleSuccess({
         data: {
+          template_inputs_with_foreign: [
+            {
+              name: 'advanced input1',
+              advanced: true,
+              default: 'default value advanced',
+            },
+          ],
           job_template: {
             execution_timeout_interval: 2,
           },
@@ -69,6 +76,19 @@ const jobTemplate = {
     overridable: true,
     current_user: false,
   },
+  template_inputs_with_foreign: [
+    {
+      name: 'plain adv hidden',
+      required: true,
+      input_type: 'user',
+      description: 'some Description',
+      advanced: true,
+      value_type: 'plain',
+      resource_type: 'ansible_roles',
+      default: 'Default val',
+      hidden_value: true,
+    },
+  ],
 };
 
 const mockStore = configureMockStore([]);
@@ -115,10 +135,19 @@ describe('Job wizard fill', () => {
       .at(2)
       .simulate('click'); // Advanced step
     const effectiveUserInput = () => wrapper.find('input#effective-user');
+    const advancedTemplateInput = () =>
+      wrapper.find('.pf-c-form__group-control textarea');
     const effectiveUesrValue = 'effective user new value';
+    const advancedTemplateInputValue = 'advanced input new value';
     effectiveUserInput().getDOMNode().value = effectiveUesrValue;
     effectiveUserInput().simulate('change');
+    advancedTemplateInput().getDOMNode().value = advancedTemplateInputValue;
+    advancedTemplateInput().simulate('change');
+
     expect(effectiveUserInput().prop('value')).toEqual(effectiveUesrValue);
+    expect(advancedTemplateInput().prop('value')).toEqual(
+      advancedTemplateInputValue
+    );
 
     wrapper
       .find('.pf-c-wizard__nav-link')
@@ -134,5 +163,8 @@ describe('Job wizard fill', () => {
       .simulate('click'); // Advanced step
 
     expect(effectiveUserInput().prop('value')).toEqual(effectiveUesrValue);
+    expect(advancedTemplateInput().prop('value')).toEqual(
+      advancedTemplateInputValue
+    );
   });
 });

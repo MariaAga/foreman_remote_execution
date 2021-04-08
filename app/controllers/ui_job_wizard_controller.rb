@@ -13,7 +13,12 @@ class UiJobWizardController < ::Api::V2::BaseController
     render :json => {
       :job_template => job_template,
       :effective_user => job_template.effective_user,
+      :template_inputs_with_foreign => map_template_inputs(job_template.template_inputs_with_foreign),
     }
+  end
+
+  def map_template_inputs(template_inputs_with_foreign)
+    template_inputs_with_foreign.map { |input| input.attributes.merge({:resource_type => input.resource_type&.tableize }) }
   end
 
   def resource_class

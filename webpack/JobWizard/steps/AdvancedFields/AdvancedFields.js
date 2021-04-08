@@ -11,13 +11,22 @@ import {
   EffectiveUserPasswordField,
   ConcurrencyLevelField,
   TimeSpanLevelField,
+  TemplateInputsFields,
 } from './Fields';
 
 export const AdvancedFields = ({ advancedValue, setAdvancedValue }) => {
   const jobTemplate = useSelector(selectJobTemplate);
   const effectiveUser = jobTemplate.effective_user;
+  const templateInputs = jobTemplate.template_inputs_with_foreign;
   return (
-    <Form>
+    <Form id="advanced-fields-job-template">
+      <TemplateInputsFields
+        inputs={templateInputs}
+        value={advancedValue.templateValues}
+        setValue={newValue =>
+          setAdvancedValue({ ...advancedValue, templateValues: newValue })
+        }
+      />
       {effectiveUser?.overridable && (
         <EffectiveUserField
           value={advancedValue.effectiveUserValue}

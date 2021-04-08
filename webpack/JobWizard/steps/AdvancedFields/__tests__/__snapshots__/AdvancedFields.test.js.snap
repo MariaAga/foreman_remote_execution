@@ -17,11 +17,23 @@ exports[`AdvancedFields rendring 1`] = `
     advancedValue={Object {}}
     setAdvancedValue={[MockFunction]}
   >
-    <Form>
+    <Form
+      id="advanced-fields-job-template"
+    >
       <form
         className="pf-c-form"
+        id="advanced-fields-job-template"
         noValidate={true}
       >
+        <TemplateInputsFields
+          inputs={
+            Array [
+              Object {},
+            ]
+          }
+          setValue={[Function]}
+          value={Object {}}
+        />
         <EffectiveUserField
           setValue={[Function]}
           value=""

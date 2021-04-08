@@ -15,13 +15,27 @@ export const JobWizard = () => {
   const [advancedValue, setAdvancedValue] = useState({});
   const dispatch = useDispatch();
 
-  const setDefaults = useCallback(response => {
-    const responseJob = response.data;
-    setAdvancedValue({
-      effectiveUserValue: responseJob.effective_user?.value || '',
-      timeoutToKill: responseJob.job_template.execution_timeout_interval || '',
-    });
-  }, []);
+  const setDefaults = useCallback(
+    response => {
+      const responseJob = response.data;
+      const templateValues = {};
+      const inputs = responseJob.template_inputs_with_foreign;
+      if (inputs) {
+        inputs
+          .filter(input => input.advanced)
+          .forEach(input => {
+            templateValues[input.name] = input?.default || '';
+          });
+      }
+      setAdvancedValue({
+        ...advancedValue,
+        effectiveUserValue: responseJob.effective_user?.value || '',
+        timeoutToKill: responseJob.job_template?.executionTimeoutInterval || '',
+        templateValues,
+      });
+    },
+    [advancedValue]
+  );
   useEffect(() => {
     if (jobTemplateID) {
       dispatch(
@@ -32,7 +46,7 @@ export const JobWizard = () => {
         })
       );
     }
-  }, [jobTemplateID, dispatch, setDefaults]);
+  }, [jobTemplateID, dispatch]);
 
   const steps = [
     {
@@ -83,10 +97,10 @@ export const JobWizard = () => {
   return (
     <Wizard
       onClose={() => history.goBack()}
+      className="job-wizard"
       navAriaLabel={`${title} steps`}
       steps={steps}
-      height="70vh"
-      className="job-wizard"
+      height="100%"
     />
   );
 };
