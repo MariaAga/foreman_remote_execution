@@ -90,6 +90,27 @@ exports[`AdvancedFields rendring 1`] = `
             <div />
           </mockConstructor>
         </EffectiveUserField>
+        <DescriptionField
+          inputs={Array []}
+          setValue={[Function]}
+          value=""
+        >
+          <mockConstructor
+            fieldId="description"
+            helperText={
+              <Button
+                isInline={true}
+                onClick={[Function]}
+                variant="link"
+              >
+                Set the custom job description
+              </Button>
+            }
+            label="Description"
+          >
+            <div />
+          </mockConstructor>
+        </DescriptionField>
         <TimeoutToKillField
           setValue={[Function]}
           value=""

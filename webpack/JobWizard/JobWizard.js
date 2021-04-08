@@ -31,6 +31,7 @@ export const JobWizard = () => {
       ...advancedValues,
       effectiveUserValue: responseJob.effective_user?.value || '',
       timeoutToKill: responseJob.job_template?.executionTimeoutInterval || '',
+      description: responseJob.job_template.description_format || '',
       templateValues,
     });
   }, []);
