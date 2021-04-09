@@ -37,10 +37,10 @@ export const CategoryAndTemplate = ({
   };
   return (
     <>
-      <Title headingLevel="h2" className="wizard-title">
-        {__('Category And Template')}
-      </Title>
-      <Text component={TextVariants.p}>{__('All fields are required.')}</Text>
+      <div className="wizard-title">
+        <Title headingLevel="h2">{__('Category And Template')}</Title>
+        <Text component={TextVariants.p}>{__('All fields are required.')}</Text>
+      </div>
       <Form>
         <SelectField
           label={__('Job category')}
@@ -48,6 +48,7 @@ export const CategoryAndTemplate = ({
           options={jobCategories}
           setValue={onSelectCategory}
           value={selectedCategory}
+          width={450}
         />
         <GroupedSelectField
           label={__('Job template')}
