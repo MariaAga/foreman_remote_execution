@@ -1,15 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SelectedChips rendering renders with props 1`] = `
-<mockConstructor
-  className="hosts-chip-group"
+<div
+  className="selected-chips"
 >
-  <mockConstructor
-    id="host1"
-    key="host1"
-    onClick={[Function]}
+  <SelectedChip
+    categoryName="Hosts"
+    selected={
+      Array [
+        "host1",
+        "host2",
+        "host3",
+      ]
+    }
+    setSelected={[MockFunction]}
+  />
+  <SelectedChip
+    categoryName="Host collections"
+    selected={Array []}
+    setSelected={[MockFunction]}
+  />
+  <SelectedChip
+    categoryName="Host groups"
+    selected={Array []}
+    setSelected={[MockFunction]}
+  />
+  <Button
+    variant="link"
   >
-    host1
-  </mockConstructor>
-</mockConstructor>
+    Clear filters
+  </Button>
+</div>
 `;

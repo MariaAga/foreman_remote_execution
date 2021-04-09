@@ -48,3 +48,42 @@
     margin-top: 8px;
   }
 }
+
+.job-wizard {
+  .pf-c-wizard__main {
+    overflow: visible;
+    z-index: calc(
+      var(--pf-c-wizard__footer--ZIndex) + 1
+    ); // So the select box can be shown above the wizard footer
+  }
+
+  .wizard-title {
+    margin-bottom: 25px;
+  }
+
+  .hosts-chip-group {
+    margin-top: 8px;
+    float: left;
+    clear: left;
+    display: block;
+  }
+
+  .gray-text {
+    color: var(--pf-global--Color--dark-200);
+  }
+
+  .target-hosts-and-inputs {
+    .hidden-chips {
+      display: none;
+    }
+    .pf-c-select__toggle-typeahead {
+      border: 0px;
+    }
+
+    .target-method-select {
+      .pf-c-select__toggle-wrapper {
+        flex-wrap: nowrap;
+      }
+    }
+  }
+}

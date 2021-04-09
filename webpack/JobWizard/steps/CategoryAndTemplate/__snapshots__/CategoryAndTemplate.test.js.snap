@@ -2,17 +2,20 @@
 
 exports[`CategoryAndTemplate rendering renders with props 1`] = `
 <Fragment>
-  <Title
+  <div
     className="wizard-title"
-    headingLevel="h2"
   >
-    Category And Template
-  </Title>
-  <Text
-    component="p"
-  >
-    All fields are required.
-  </Text>
+    <Title
+      headingLevel="h2"
+    >
+      Category And Template
+    </Title>
+    <Text
+      component="p"
+    >
+      All fields are required.
+    </Text>
+  </div>
   <Form>
     <SelectField
       fieldId="job_category"
@@ -27,6 +30,7 @@ exports[`CategoryAndTemplate rendering renders with props 1`] = `
       }
       setValue={[Function]}
       value="I am a category"
+      width={450}
     />
     <GroupedSelectField
       fieldId="job_template"

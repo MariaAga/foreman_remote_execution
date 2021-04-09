@@ -19,8 +19,8 @@ describe('HostsAndInputs', () => {
         <HostsAndInputs
           templateValues={{}}
           setTemplateValues={jest.fn()}
-          selectedHosts={['host1']}
-          setSelectedHosts={jest.fn()}
+          selected={{ hosts: ['host1'], hostCollections: [], hostGroups: [] }}
+          setSelected={jest.fn()}
         />
       </Provider>
     );

@@ -12,8 +12,12 @@ patternfly.ChipGroup.mockImplementation(props => <div {...props} />);
 const selectedHosts = ['host1', 'host2', 'host3'];
 const setSelectedHosts = jest.fn();
 const props = {
-  selected: [selectedHosts[0]],
-  setSelected: setSelectedHosts,
+  selectedHosts,
+  setSelectedHosts,
+  selectedHostCollections: [],
+  setSelectedHostCollections: jest.fn(),
+  selectedHostGroups: [],
+  setSelectedHostGroups: jest.fn(),
 };
 const fixtures = {
   'renders with props': props,

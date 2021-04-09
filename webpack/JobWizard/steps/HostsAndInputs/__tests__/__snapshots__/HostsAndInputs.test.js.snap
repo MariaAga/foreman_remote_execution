@@ -14,102 +14,335 @@ exports[`HostsAndInputs rendering 1`] = `
   }
 >
   <HostsAndInputs
-    selectedHosts={
-      Array [
-        "host1",
-      ]
+    selected={
+      Object {
+        "hostCollections": Array [],
+        "hostGroups": Array [],
+        "hosts": Array [
+          "host1",
+        ],
+      }
     }
-    setSelectedHosts={[MockFunction]}
+    setSelected={[MockFunction]}
     setTemplateValues={[MockFunction]}
     templateValues={Object {}}
   >
-    <Title
-      className="wizard-title"
-      headingLevel="h2"
+    <div
+      className="target-hosts-and-inputs"
     >
-      <h2
-        className="pf-c-title pf-m-xl wizard-title"
+      <Title
+        className="wizard-title"
+        headingLevel="h2"
       >
-        Target hosts and inputs
-      </h2>
-    </Title>
-    <Form>
-      <form
-        className="pf-c-form"
-        noValidate={true}
-      >
-        <mockConstructor
-          fieldId="host_selection"
+        <h2
+          className="pf-c-title pf-m-xl wizard-title"
         >
-          <div
-            props={
-              Object {
-                "children": Array [
-                  <SelectField
-                    fieldId="host_methods"
-                    label={null}
-                    options={
-                      Array [
-                        "Hosts",
-                        "Host collection",
-                        "Host group",
-                        "Search query",
-                      ]
-                    }
-                    setValue={[Function]}
-                    value="Hosts"
-                  />,
-                  <SelectedChips
-                    selected={
-                      Array [
-                        "host1",
-                      ]
-                    }
-                    setSelected={[MockFunction]}
-                  />,
-                ],
-                "fieldId": "host_selection",
+          Target hosts and inputs
+        </h2>
+      </Title>
+      <Form>
+        <form
+          className="pf-c-form"
+          noValidate={true}
+        >
+          <mockConstructor
+            fieldId="host_selection"
+          >
+            <div
+              props={
+                Object {
+                  "children": <InputGroup>
+                    <SelectField
+                      className="target-method-select"
+                      fieldId="host_methods"
+                      label={null}
+                      options={
+                        Array [
+                          "Hosts",
+                          "Host collections",
+                          "Host groups",
+                          "Search query",
+                        ]
+                      }
+                      setValue={[Function]}
+                      toggleIcon={
+                        <FilterIcon
+                          color="currentColor"
+                          noVerticalAlign={false}
+                          size="sm"
+                        />
+                      }
+                      value="Hosts"
+                    />
+                    <HostSelect
+                      apiKey="HOSTS"
+                      placeholderText="Filter by hosts"
+                      selectedHosts={
+                        Array [
+                          "host1",
+                        ]
+                      }
+                      setSelectedHosts={[Function]}
+                      url="/api/hosts?per_page=100"
+                    />
+                  </InputGroup>,
+                  "fieldId": "host_selection",
+                }
               }
+            />
+          </mockConstructor>
+          <SelectedChips
+            selectedHostCollections={Array []}
+            selectedHostGroups={Array []}
+            selectedHosts={
+              Array [
+                "host1",
+              ]
             }
-          />
-        </mockConstructor>
-        <span>
-          Apply to
-           
-          <Button
-            isInline={true}
-            variant="link"
+            setSelectedHostCollections={[Function]}
+            setSelectedHostGroups={[Function]}
+            setSelectedHosts={[Function]}
           >
-            <button
-              aria-disabled={false}
-              aria-label={null}
-              className="pf-c-button pf-m-link pf-m-inline"
-              data-ouia-component-id="OUIA-Generated-Button-link-1"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe={true}
-              disabled={false}
-              role={null}
-              type="button"
+            <div
+              className="selected-chips"
             >
-              1
+              <SelectedChip
+                categoryName="Hosts"
+                selected={
+                  Array [
+                    "host1",
+                  ]
+                }
+                setSelected={[Function]}
+              >
+                <ChipGroup
+                  aria-label="Chip group category"
+                  categoryName="Hosts"
+                  className="hosts-chip-group"
+                  closeBtnAriaLabel="Close chip group"
+                  collapsedText="\${remaining} more"
+                  defaultIsOpen={false}
+                  expandedText="Show Less"
+                  isClosable={false}
+                  numChips={3}
+                  onClick={[Function]}
+                  onOverflowChipClick={[Function]}
+                  tooltipPosition="top"
+                >
+                  <GenerateId
+                    prefix="pf-random-id-"
+                  >
+                    <div
+                      className="pf-c-chip-group hosts-chip-group pf-m-category"
+                      data-ouia-component-type="PF4/ChipGroup"
+                      data-ouia-safe={true}
+                    >
+                      <div
+                        className="pf-c-chip-group__main"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="pf-c-chip-group__label"
+                          id="pf-random-id-0"
+                        >
+                          Hosts
+                        </span>
+                        <ul
+                          aria-labelledby="pf-random-id-0"
+                          className="pf-c-chip-group__list"
+                          role="list"
+                        >
+                          <li
+                            className="pf-c-chip-group__list-item"
+                            key="0"
+                          >
+                            <Chip
+                              className=""
+                              closeBtnAriaLabel="close"
+                              component="div"
+                              id="host1"
+                              isOverflowChip={false}
+                              isReadOnly={false}
+                              key=".$host1"
+                              onClick={[Function]}
+                              tooltipPosition="top"
+                            >
+                              <GenerateId
+                                prefix="pf-random-id-"
+                              >
+                                <div
+                                  className="pf-c-chip"
+                                  data-ouia-component-id="OUIA-Generated-Chip-1"
+                                  data-ouia-component-type="PF4/Chip"
+                                  data-ouia-safe={true}
+                                >
+                                  <span
+                                    className="pf-c-chip__text"
+                                    id="host1"
+                                  >
+                                    host1
+                                  </span>
+                                  <Button
+                                    aria-label="close"
+                                    aria-labelledby="remove_host1 host1"
+                                    id="remove_host1"
+                                    onClick={[Function]}
+                                    ouiaId="close"
+                                    variant="plain"
+                                  >
+                                    <button
+                                      aria-disabled={false}
+                                      aria-label="close"
+                                      aria-labelledby="remove_host1 host1"
+                                      className="pf-c-button pf-m-plain"
+                                      data-ouia-component-id="close"
+                                      data-ouia-component-type="PF4/Button"
+                                      data-ouia-safe={true}
+                                      disabled={false}
+                                      id="remove_host1"
+                                      onClick={[Function]}
+                                      role={null}
+                                      type="button"
+                                    >
+                                      <TimesIcon
+                                        aria-hidden="true"
+                                        color="currentColor"
+                                        noVerticalAlign={false}
+                                        size="sm"
+                                      >
+                                        <svg
+                                          aria-hidden="true"
+                                          aria-labelledby={null}
+                                          fill="currentColor"
+                                          height="1em"
+                                          role="img"
+                                          style={
+                                            Object {
+                                              "verticalAlign": "-0.125em",
+                                            }
+                                          }
+                                          viewBox="0 0 352 512"
+                                          width="1em"
+                                        >
+                                          <path
+                                            d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                          />
+                                        </svg>
+                                      </TimesIcon>
+                                    </button>
+                                  </Button>
+                                </div>
+                              </GenerateId>
+                            </Chip>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </GenerateId>
+                </ChipGroup>
+              </SelectedChip>
+              <SelectedChip
+                categoryName="Host collections"
+                selected={Array []}
+                setSelected={[Function]}
+              >
+                <ChipGroup
+                  aria-label="Chip group category"
+                  categoryName="Host collections"
+                  className="hosts-chip-group"
+                  closeBtnAriaLabel="Close chip group"
+                  collapsedText="\${remaining} more"
+                  defaultIsOpen={false}
+                  expandedText="Show Less"
+                  isClosable={false}
+                  numChips={3}
+                  onClick={[Function]}
+                  onOverflowChipClick={[Function]}
+                  tooltipPosition="top"
+                />
+              </SelectedChip>
+              <SelectedChip
+                categoryName="Host groups"
+                selected={Array []}
+                setSelected={[Function]}
+              >
+                <ChipGroup
+                  aria-label="Chip group category"
+                  categoryName="Host groups"
+                  className="hosts-chip-group"
+                  closeBtnAriaLabel="Close chip group"
+                  collapsedText="\${remaining} more"
+                  defaultIsOpen={false}
+                  expandedText="Show Less"
+                  isClosable={false}
+                  numChips={3}
+                  onClick={[Function]}
+                  onOverflowChipClick={[Function]}
+                  tooltipPosition="top"
+                />
+              </SelectedChip>
+              <Button
+                variant="link"
+              >
+                <button
+                  aria-disabled={false}
+                  aria-label={null}
+                  className="pf-c-button pf-m-link"
+                  data-ouia-component-id="OUIA-Generated-Button-link-1"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe={true}
+                  disabled={false}
+                  role={null}
+                  type="button"
+                >
+                  Clear filters
+                </button>
+              </Button>
+            </div>
+          </SelectedChips>
+          <Text>
+            <p
+              className=""
+              data-pf-content={true}
+            >
+              Apply to
                
-              hosts
-            </button>
-          </Button>
-        </span>
-        <TemplateInputs
-          inputs={Array []}
-          setValue={[MockFunction]}
-          value={Object {}}
-        >
-          <p
-            className="gray-text"
+              <Button
+                isInline={true}
+                variant="link"
+              >
+                <button
+                  aria-disabled={false}
+                  aria-label={null}
+                  className="pf-c-button pf-m-link pf-m-inline"
+                  data-ouia-component-id="OUIA-Generated-Button-link-2"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe={true}
+                  disabled={false}
+                  role={null}
+                  type="button"
+                >
+                  1
+                   
+                  hosts
+                </button>
+              </Button>
+            </p>
+          </Text>
+          <TemplateInputs
+            inputs={Array []}
+            setValue={[MockFunction]}
+            value={Object {}}
           >
-            There are no available input fields for the selected template.
-          </p>
-        </TemplateInputs>
-      </form>
-    </Form>
+            <p
+              className="gray-text"
+            >
+              There are no available input fields for the selected template.
+            </p>
+          </TemplateInputs>
+        </form>
+      </Form>
+    </div>
   </HostsAndInputs>
 </Provider>
 `;

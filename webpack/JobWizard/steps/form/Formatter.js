@@ -67,6 +67,7 @@ export const formatter = (input, values, setValue) => {
         labelText={labelText}
         value={value}
         setValue={newValue => setValue({ ...values, [name]: newValue })}
+        width={450}
       />
     );
   }

@@ -2,6 +2,7 @@ import {
   selectAPIResponse,
   selectAPIStatus,
 } from 'foremanReact/redux/API/APISelectors';
+import { STATUS } from 'foremanReact/constants';
 
 import {
   JOB_TEMPLATES,
@@ -14,7 +15,6 @@ export const selectJobTemplatesStatus = state =>
 
 export const filterJobTemplates = templates =>
   templates?.filter(template => !template.snippet) || [];
-
 export const selectJobTemplates = state =>
   filterJobTemplates(selectAPIResponse(state, JOB_TEMPLATES)?.results);
 
@@ -26,3 +26,10 @@ export const selectJobCategoriesStatus = state =>
 
 export const selectJobTemplate = state =>
   selectAPIResponse(state, JOB_TEMPLATE) || {};
+
+export const selectResponse = (state, key) =>
+  selectAPIResponse(state, key) || {};
+
+export const selectIsLoading = (state, key) =>
+  !selectAPIStatus(state, key) ||
+  selectAPIStatus(state, key) === STATUS.PENDING;

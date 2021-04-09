@@ -105,11 +105,13 @@ exports[`formatter render select input 1`] = `
   <mockConstructor
     className="without_select2"
     isOpen={false}
+    isRequired={false}
     maxHeight="45vh"
     menuAppendTo={[Function]}
     onSelect={[Function]}
     onToggle={[Function]}
     selections={null}
+    width={450}
   >
     <mockConstructor
       key="0"

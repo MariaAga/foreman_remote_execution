@@ -15,7 +15,11 @@ export const JobWizard = () => {
   const [category, setCategory] = useState('');
   const [advancedValue, setAdvancedValue] = useState({});
   const [templateValues, setTemplateValues] = useState({}); // TODO use templateValues in advanced fields - description
-  const [selectedHosts, setSelectedHosts] = useState(['host1', 'host2']);
+  const [selectedTargets, setSelectedTargets] = useState({
+    hosts: [],
+    hostCollections: [],
+    hostGroups: [],
+  });
   const dispatch = useDispatch();
 
   const setDefaults = useCallback(
@@ -51,6 +55,7 @@ export const JobWizard = () => {
         })
       );
     }
+    // So advancedValue is only changed when the jobTemplateID is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobTemplateID, dispatch]);
 
@@ -72,8 +77,8 @@ export const JobWizard = () => {
         <HostsAndInputs
           templateValues={templateValues}
           setTemplateValues={setTemplateValues}
-          selectedHosts={selectedHosts}
-          setSelectedHosts={setSelectedHosts}
+          selected={selectedTargets}
+          setSelected={setSelectedTargets}
         />
       ),
       canJumpTo: !!jobTemplateID,

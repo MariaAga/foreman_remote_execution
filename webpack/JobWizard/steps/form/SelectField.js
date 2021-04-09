@@ -2,7 +2,14 @@ import React, { useState } from 'react';
 import { FormGroup, Select, SelectOption } from '@patternfly/react-core';
 import PropTypes from 'prop-types';
 
-export const SelectField = ({ label, fieldId, options, value, setValue }) => {
+export const SelectField = ({
+  label,
+  fieldId,
+  options,
+  value,
+  setValue,
+  ...otherProps
+}) => {
   const onSelect = (event, selection) => {
     setValue(selection);
     setIsOpen(false);
@@ -18,6 +25,7 @@ export const SelectField = ({ label, fieldId, options, value, setValue }) => {
         className="without_select2"
         maxHeight="45vh"
         menuAppendTo={() => document.body}
+        {...otherProps}
       >
         {options.map((option, index) => (
           <SelectOption key={index} value={option} />
