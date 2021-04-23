@@ -1,4 +1,10 @@
 import React from 'react';
 
-const SearchBar = () => <div>search</div>;
+const SearchBar = ({ onChange }) => (
+  <input
+    className="foreman-search"
+    onChange={onChange}
+    placeholder="Filter..."
+  />
+);
 export default SearchBar;

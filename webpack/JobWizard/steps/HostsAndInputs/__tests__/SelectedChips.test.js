@@ -11,6 +11,19 @@ jest.spyOn(api, 'get');
 jest.spyOn(selectors, 'selectJobTemplate');
 
 const jobCategories = ['Ansible Commands', 'Puppet', 'Services'];
+const selectedHosts = ['host1', 'host2', 'host3'];
+const setSelectedHosts = jest.fn();
+const props = {
+  selectedHosts,
+  setSelectedHosts,
+  selectedHostCollections: [],
+  setSelectedHostCollections: jest.fn(),
+  selectedHostGroups: [],
+  setSelectedHostGroups: jest.fn(),
+  hostsSearchQuery: '',
+  clearSearch: jest.fn(),
+};
+
 
 api.get.mockImplementation(({ handleSuccess, ...action }) => {
   if (action.key === 'JOB_CATEGORIES') {
