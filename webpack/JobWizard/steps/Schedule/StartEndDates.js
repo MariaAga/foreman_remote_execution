@@ -14,7 +14,7 @@ export const StartEndDates = ({
 }) => {
   const toggleIsNeverEnds = (checked, event) => {
     const value = event?.target?.checked;
-    setIsNeverEnds(value);
+    setIsNeverEnds(value ? 'never' : '');
   };
   const validateEndDate = () => {
     if (isNeverEnds) return 'success';

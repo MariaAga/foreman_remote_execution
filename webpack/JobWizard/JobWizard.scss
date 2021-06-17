@@ -10,29 +10,85 @@
     .advanced-fields-title {
       margin-bottom: 10px;
     }
-  }
 
-  .schedule-tab {
-    input[type='radio'],
-    input[type='checkbox'] {
-      margin: 0;
+    .schedule-tab {
+      input[type='radio'],
+      input[type='checkbox'] {
+        margin: 0;
+      }
+      .advanced-scheduling-button {
+        text-align: start;
+      }
+      #set-ends-after .pf-c-form__group-control {
+        div {
+          display: grid;
+          grid-template-columns: 1fr 3fr;
+        }
+        span {
+          margin: auto 0 auto 2px;
+        }
+      }
     }
+  }
+  .advanced-schedule-modal {
+    #repeat-on {
+      .pf-c-form__group {
+        grid-template-columns: none;
+      }
+    }
+
+    .radio-advanced-schedule {
+      margin-bottom: 1rem;
+
+      input[type='radio'] {
+        margin-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+      }
+    }
+    .repeat-on-day {
+      input[type='checkbox'] {
+        margin: 0;
+      }
+    }
+
     .advanced-scheduling-button {
       text-align: start;
     }
-  }
 
-  .pf-c-date-picker {
-    vertical-align: top;
-  }
+    .pf-c-date-picker {
+      vertical-align: top;
+    }
 
-  .time-picker {
-    width: 150px;
-  }
+    .time-picker {
+      width: 150px;
+    }
 
-  input[type='radio'],
-  input[type='checkbox'] {
-    // overwriting bootstrap/_forms.scss margin: 4px 0 0;
-    margin: 0;
+    #set-ends-after .pf-c-form__group-control div {
+      display: grid;
+      grid-template-columns: 0.25fr 1fr;
+      grid-column-gap: 5px;
+      span {
+        padding-top: var(
+          --pf-c-form--m-horizontal__group-label--md--PaddingTop
+        );
+      }
+    }
+
+    input[type='radio'],
+    input[type='checkbox'] {
+      // overwriting bootstrap/_forms.scss margin: 4px 0 0;
+      margin: 0;
+    }
+
+    #repeats-every .pf-c-select {
+      width: auto;
+    }
+
+    #repeat-on-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+  }
+  .pf-c-modal-box {
+    width: auto;
   }
 }

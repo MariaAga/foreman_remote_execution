@@ -1,9 +1,30 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { TextInput, Grid, GridItem, FormGroup } from '@patternfly/react-core';
-import { translate as __ } from 'foremanReact/common/I18n';
+import {
+  TextInput,
+  Grid,
+  GridItem,
+  FormGroup,
+  Checkbox,
+} from '@patternfly/react-core';
+import { translate as __, documentLocale } from 'foremanReact/common/I18n';
 import { SelectField } from '../form/SelectField';
 import { repeatTypes } from '../../JobWizardConstants';
+
+const getWeekDays = () => {
+  const locale = documentLocale().replace(/-/g, '_');
+  const baseDate = new Date(Date.UTC(2017, 0, 2)); // just a Monday
+  const weekDays = [];
+  for (let i = 0; i < 7; i++) {
+    try {
+      weekDays.push(baseDate.toLocaleDateString(locale, { weekday: 'short' }));
+    } catch {
+      weekDays.push(baseDate.toLocaleDateString('en', { weekday: 'short' }));
+    }
+    baseDate.setDate(baseDate.getDate() + 1);
+  }
+  return weekDays;
+};
 
 export const RepeatOn = ({
   repeatType,
@@ -16,8 +37,16 @@ export const RepeatOn = ({
     setRepeatValidated(newValue >= 1 ? 'default' : 'error');
     setRepeatAmount(newValue);
   };
+  const days = getWeekDays();
+  const [repeatOn, setRepeatOn] = useState([]);
+  const handleChangeDays = (checked, event) => {
+    const { target } = event;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const { name } = target;
+    setRepeatOn(oldValue => ({ ...oldValue, [name]: value }));
+  };
   return (
-    <Grid>
+    <Grid id="repeat-on">
       <GridItem span={6}>
         <SelectField
           fieldId="repeat-select"
@@ -38,14 +67,29 @@ export const RepeatOn = ({
           helperTextInvalid={__('Repeat amount can only be a positive number')}
           validated={repeatValidated}
         >
-          <TextInput
-            isDisabled={repeatType === repeatTypes.noRepeat}
-            id="repeat-amount"
-            value={repeatAmount}
-            type="text"
-            onChange={newValue => handleRepeatInputChange(newValue)}
-            placeholder={__('Repeat N times')}
-          />
+          {repeatType === repeatTypes.weekly ? (
+            <div id="repeat-on-grid">
+              {days.map((day, index) => (
+                <Checkbox
+                  key={index}
+                  isChecked={repeatOn[index]}
+                  name={index}
+                  id={`repeat-on-day-${index}`}
+                  onChange={handleChangeDays}
+                  label={day}
+                />
+              ))}
+            </div>
+          ) : (
+            <TextInput
+              isDisabled={repeatType === repeatTypes.noRepeat}
+              id="repeat-amount"
+              value={repeatAmount}
+              type="text"
+              onChange={newValue => handleRepeatInputChange(newValue)}
+              // placeholder={__('Repeat N times')}
+            />
+          )}
         </FormGroup>
       </GridItem>
     </Grid>

@@ -21,9 +21,10 @@ export const JobWizard = () => {
     repeatType: repeatTypes.noRepeat,
     repeatAmount: '',
     starts: '',
+    startsBefore: '',
     ends: '',
     isFuture: false,
-    isNeverEnds: false,
+    endType: 'never',
   });
 
   const setDefaults = useCallback(response => {
@@ -85,7 +86,12 @@ export const JobWizard = () => {
       component: (
         <Schedule
           scheduleValue={scheduleValue}
-          setScheduleValue={setScheduleValue}
+          setScheduleValue={newValues => {
+            setScheduleValue(currentAdvancedValues => ({
+              ...currentAdvancedValues,
+              ...newValues,
+            }));
+          }}
         />
       ),
       canJumpTo: isTemplate,

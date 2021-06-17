@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Title, Button, Form } from '@patternfly/react-core';
 import { translate as __ } from 'foremanReact/common/I18n';
@@ -6,76 +6,87 @@ import { ScheduleType } from './ScheduleType';
 import { RepeatOn } from './RepeatOn';
 import { QueryType } from './QueryType';
 import { StartEndDates } from './StartEndDates';
+import { isNumber } from '../form/FormHelpers';
+import { repeatTypes } from '../../JobWizardConstants';
+import { AdvancedScheduling } from './AdvancedScheduling';
 
 const Schedule = ({ scheduleValue, setScheduleValue }) => {
-  const { repeatType, repeatAmount, starts, ends, isNeverEnds } = scheduleValue;
+  const { repeatType, repeatAmount, starts, ends, endType } = scheduleValue;
+  // const [repeatType, setRepeatType] = useState(repeatTypes.noRepeat);
+  // const [repeatAmount, setRepeatAmount] = useState('');
+  // const [starts, setStarts] = useState('');
+  // const [ends, setEnds] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <Form className="schedule-tab">
+      <AdvancedScheduling
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        scheduleValue={scheduleValue}
+        setScheduleValue={setScheduleValue}
+      />
       <Title headingLevel="h2">{__('Schedule')}</Title>
       <ScheduleType
         isFuture={scheduleValue.isFuture}
         setIsFuture={newValue => {
           if (!newValue) {
             // if schedule type is execute now
-            setScheduleValue(current => ({
-              ...current,
+            setScheduleValue({
               starts: '',
-            }));
+            });
           }
-          setScheduleValue(current => ({
-            ...current,
+          setScheduleValue({
             isFuture: newValue,
-          }));
+          });
         }}
       />
 
       <RepeatOn
         repeatType={repeatType}
         setRepeatType={newValue => {
-          setScheduleValue(current => ({
-            ...current,
+          setScheduleValue({
             repeatType: newValue,
-          }));
+          });
         }}
         repeatAmount={repeatAmount}
         setRepeatAmount={newValue => {
-          setScheduleValue(current => ({
-            ...current,
+          setScheduleValue({
             repeatAmount: newValue,
-          }));
+          });
         }}
       />
       <StartEndDates
         starts={starts}
         setStarts={newValue => {
           if (!scheduleValue.isFuture) {
-            setScheduleValue(current => ({
-              ...current,
+            setScheduleValue({
               isFuture: true,
-            }));
+            });
           }
-          setScheduleValue(current => ({
-            ...current,
+          setScheduleValue({
             starts: newValue,
-          }));
+          });
         }}
         ends={ends}
         setEnds={newValue => {
-          setScheduleValue(current => ({
-            ...current,
+          setScheduleValue({
             ends: newValue,
-          }));
+          });
         }}
-        isNeverEnds={isNeverEnds}
+        isNeverEnds={endType === 'never'}
         setIsNeverEnds={newValue => {
-          setScheduleValue(current => ({
-            ...current,
-            isNeverEnds: newValue,
-          }));
+          setScheduleValue({
+            endType: newValue,
+          });
         }}
       />
-      <Button variant="link" className="advanced-scheduling-button" isInline>
+      <Button
+        variant="link"
+        className="advanced-scheduling-button"
+        isInline
+        onClick={() => setIsModalOpen(true)}
+      >
         {__('Advanced scheduling')}
       </Button>
       <QueryType />
@@ -90,7 +101,7 @@ Schedule.propTypes = {
     starts: PropTypes.string,
     ends: PropTypes.string,
     isFuture: PropTypes.bool,
-    isNeverEnds: PropTypes.bool,
+    endType: PropTypes.string,
   }).isRequired,
   setScheduleValue: PropTypes.func.isRequired,
 };
