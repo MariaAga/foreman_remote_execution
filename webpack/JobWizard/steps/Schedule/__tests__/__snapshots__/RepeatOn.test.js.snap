@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RepeatOn renders 1`] = `
+<Grid>
+  <GridItem
+    span={6}
+  >
+    <SelectField
+      fieldId="repeat-select"
+      label={null}
+      options={
+        Array [
+          "Does not repeat",
+          "Cronline",
+          "Monthly",
+          "Weekly",
+          "Daily",
+          "Hourly",
+        ]
+      }
+      setValue={[Function]}
+      value="Cronline"
+    />
+  </GridItem>
+  <GridItem
+    span={1}
+  />
+  <GridItem
+    span={5}
+  >
+    <mockConstructor
+      helperTextInvalid="Repeat amount can only be a positive number"
+      isInline={true}
+      validated="default"
+    >
+      <TextInput
+        id="repeat-amount"
+        isDisabled={false}
+        onChange={[Function]}
+        placeholder="Repeat N times"
+        type="text"
+        value={1}
+      />
+    </mockConstructor>
+  </GridItem>
+</Grid>
+`;

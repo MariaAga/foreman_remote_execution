@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StartEndDates renders 1`] = `
+<Fragment>
+  <mockConstructor
+    fieldId="start-date"
+    label="Starts"
+  >
+    <TextInput
+      id="start-date"
+      onChange={[Function]}
+      placeholder="mm/dd/yy, hh:mm UTC"
+      type="text"
+      value=""
+    />
+  </mockConstructor>
+  <mockConstructor
+    fieldId="end-date"
+    label="Ends"
+  >
+    <TextInput
+      id="end-date"
+      isDisabled={false}
+      onChange={[Function]}
+      placeholder="mm/dd/yy, hh:mm UTC"
+      type="text"
+      value="some-end-date"
+    />
+    <Checkbox
+      className=""
+      id="never-ends"
+      isChecked={false}
+      isDisabled={false}
+      isValid={true}
+      label="Never ends"
+      name="never-ends"
+      onChange={[Function]}
+    />
+  </mockConstructor>
+</Fragment>
+`;

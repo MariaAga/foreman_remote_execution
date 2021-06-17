@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QueryType renders 1`] = `
+<mockConstructor
+  fieldId="query-type"
+  label="Query type"
+  labelIcon={
+    <Popover
+      aria-label="help-text"
+      bodyContent={
+        <p>
+          Type has impact on when is the query evaluated to hosts.
+          <br />
+          <ul>
+            <li>
+              <b>
+                Static
+              </b>
+               -
+               
+              evaluates just after you submit this form
+            </li>
+            <li>
+              <b>
+                Dynamic
+              </b>
+               -
+               
+              evaluates just before the execution is started, so if it's planed in future, targeted hosts set may change before it
+            </li>
+          </ul>
+        </p>
+      }
+      id="query-type-help"
+    >
+      <button
+        aria-label="open-help-tooltip-button"
+        className="pf-c-form__group-label-help"
+        onClick={[Function]}
+      >
+        <HelpIcon
+          color="currentColor"
+          noVerticalAlign={true}
+          size="sm"
+        />
+      </button>
+    </Popover>
+  }
+>
+  <Radio
+    className=""
+    id="query-type-static"
+    isChecked={true}
+    isDisabled={false}
+    isValid={true}
+    label="Static query"
+    name="query-type"
+    onChange={[Function]}
+  />
+  <Radio
+    className=""
+    id="query-type-dynamic"
+    isChecked={false}
+    isDisabled={false}
+    isValid={true}
+    label="Dynamic query"
+    name="query-type"
+    onChange={[Function]}
+  />
+</mockConstructor>
+`;

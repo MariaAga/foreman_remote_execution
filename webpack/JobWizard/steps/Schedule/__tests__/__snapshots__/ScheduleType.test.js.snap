@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ScheduleType renders 1`] = `
+<mockConstructor
+  fieldId="schedule-type"
+  label="Schedule type"
+>
+  <Radio
+    className=""
+    id="schedule-type-now"
+    isChecked={true}
+    isDisabled={false}
+    isValid={true}
+    label="Execute now"
+    name="schedule-type"
+    onChange={[Function]}
+  />
+  <Radio
+    className=""
+    id="schedule-type-future"
+    isChecked={false}
+    isDisabled={false}
+    isValid={true}
+    label="Schedule for future execution"
+    name="schedule-type"
+    onChange={[Function]}
+  />
+</mockConstructor>
+`;
