@@ -19,7 +19,11 @@ import {
 } from './Fields';
 import { DescriptionField } from './DescriptionField';
 
-export const AdvancedFields = ({ advancedValues, setAdvancedValues }) => {
+export const AdvancedFields = ({
+  advancedValues,
+  setAdvancedValues,
+  templateValues,
+}) => {
   const effectiveUser = useSelector(selectEffectiveUser);
   const templateInputs = useSelector(selectTemplateInputs);
   return (
@@ -46,7 +50,7 @@ export const AdvancedFields = ({ advancedValues, setAdvancedValues }) => {
           />
         )}
         <DescriptionField
-          inputs={templateInputs.filter(input => !input.advanced)}
+          inputValues={{ ...templateValues, ...advancedValues }}
           value={advancedValues.description}
           setValue={newValue =>
             setAdvancedValues({ ...advancedValues, description: newValue })
@@ -108,5 +112,6 @@ export const AdvancedFields = ({ advancedValues, setAdvancedValues }) => {
 AdvancedFields.propTypes = {
   advancedValues: PropTypes.object.isRequired,
   setAdvancedValues: PropTypes.func.isRequired,
+  templateValues: PropTypes.object.isRequired,
 };
 export default AdvancedFields;

@@ -2,17 +2,11 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { mount } from '@theforeman/test';
-<<<<<<< HEAD
-import * as api from 'foremanReact/redux/API';
-import { JobWizard } from '../JobWizard';
-import * as selectors from '../JobWizardSelectors';
-=======
 import { render, fireEvent, screen, act } from '@testing-library/react';
 import * as api from 'foremanReact/redux/API';
 import { JobWizard } from '../JobWizard';
 import * as selectors from '../JobWizardSelectors';
 import { jobTemplates, jobTemplateResponse as jobTemplate } from './fixtures';
->>>>>>> advanced-description-fields-exp
 
 jest.spyOn(api, 'get');
 jest.spyOn(selectors, 'selectJobTemplate');
@@ -160,7 +154,7 @@ describe('Job wizard fill', () => {
       </Provider>
     );
     const steps = [
-      'Target hosts and input',
+      'Target hosts and inputs',
       'Advanced fields',
       'Schedule',
       'Review Details',

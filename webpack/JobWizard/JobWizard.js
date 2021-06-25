@@ -90,6 +90,7 @@ export const JobWizard = () => {
             }));
           }}
           jobTemplateID={jobTemplateID}
+          templateValues={templateValues}
         />
       ),
       canJumpTo: isTemplate,
