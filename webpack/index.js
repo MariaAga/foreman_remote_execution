@@ -1,8 +1,9 @@
-import { registerReducer } from 'foremanReact/common/MountingService';
 import componentRegistry from 'foremanReact/components/componentRegistry';
 import JobInvocationContainer from './react_app/components/jobInvocations';
 import TargetingHosts from './react_app/components/TargetingHosts';
-import rootReducer from './react_app/redux/reducers';
+import registerReducers from './react_app/extend/reducers';
+
+registerReducers();
 
 const components = [
   { name: 'JobInvocationContainer', type: JobInvocationContainer },
@@ -12,5 +13,3 @@ const components = [
 components.forEach(component => {
   componentRegistry.register(component);
 });
-
-registerReducer('foremanRemoteExecutionReducers', rootReducer);

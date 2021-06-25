@@ -11,14 +11,24 @@ patternfly.FormGroup.mockImplementation(props => (
 ));
 const mockStore = configureMockStore([]);
 const store = mockStore({
-  effective_user: { overridable: true },
-  template_inputs_with_foreign: [{}],
+  JOB_TEMPLATE: {
+    response: {
+      effective_user: { overridable: true },
+      template_inputs_with_foreign: [
+        {
+          name: 'advanced input1',
+          advanced: true,
+          default: 'default value advanced',
+        },
+      ],
+    },
+  },
 });
 describe('AdvancedFields', () => {
   it('rendring', () => {
     const component = mount(
       <Provider store={store}>
-        <AdvancedFields advancedValue={{}} setAdvancedValue={jest.fn()} />
+        <AdvancedFields advancedValues={{}} setAdvancedValues={jest.fn()} />
       </Provider>
     );
     expect(component).toMatchSnapshot();

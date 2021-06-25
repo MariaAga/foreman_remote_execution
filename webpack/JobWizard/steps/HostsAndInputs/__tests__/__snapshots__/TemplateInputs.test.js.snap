@@ -17,6 +17,7 @@ exports[`TemplateInputs rendering renders with text props 1`] = `
           aria-label="open-help-tooltip-button"
           className="pf-c-form__group-label-help"
           onClick={[Function]}
+          type="button"
         >
           <HelpIcon
             color="currentColor"

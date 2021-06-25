@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Title, Text, TextVariants, Form } from '@patternfly/react-core';
+import { Title, Text, TextVariants, Form, Alert } from '@patternfly/react-core';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { SelectField } from '../form/SelectField';
 import { GroupedSelectField } from '../form/GroupedSelectField';
@@ -12,6 +12,7 @@ export const CategoryAndTemplate = ({
   selectedTemplateID,
   selectedCategory,
   setCategory,
+  errors,
 }) => {
   const templatesGroups = {};
   jobTemplates.forEach(template => {
@@ -35,11 +36,11 @@ export const CategoryAndTemplate = ({
     setCategory(newCategory);
     setJobTemplate(null);
   };
+  const { categoryError, allTemplatesError, templateError } = errors;
+  const isError = !!(categoryError || allTemplatesError || templateError);
   return (
     <>
-      <Title headingLevel="h2" className="wizard-title">
-        {__('Category And Template')}
-      </Title>
+      <Title headingLevel="h2">{__('Category and Template')}</Title>
       <Text component={TextVariants.p}>{__('All fields are required.')}</Text>
       <Form>
         <SelectField
@@ -48,6 +49,8 @@ export const CategoryAndTemplate = ({
           options={jobCategories}
           setValue={onSelectCategory}
           value={selectedCategory}
+          placeholderText={categoryError ? __('Error') : ''}
+          isDisabled={!!categoryError}
         />
         <GroupedSelectField
           label={__('Job template')}
@@ -55,7 +58,28 @@ export const CategoryAndTemplate = ({
           groups={Object.values(templatesGroups)}
           setSelected={setJobTemplate}
           selected={selectedTemplate}
+          isDisabled={!!(categoryError || allTemplatesError)}
+          placeholderText={allTemplatesError ? __('Error') : ''}
         />
+        {isError && (
+          <Alert variant="danger" title={__('Errors:')}>
+            {categoryError && (
+              <span>
+                {__('Categories list failed with:')} {categoryError}
+              </span>
+            )}
+            {allTemplatesError && (
+              <span>
+                {__('Templates list failed with:')} {allTemplatesError}
+              </span>
+            )}
+            {templateError && (
+              <span>
+                {__('Template failed with:')} {templateError}
+              </span>
+            )}
+          </Alert>
+        )}
       </Form>
     </>
   );
@@ -68,12 +92,18 @@ CategoryAndTemplate.propTypes = {
   selectedTemplateID: PropTypes.number,
   setCategory: PropTypes.func.isRequired,
   selectedCategory: PropTypes.string,
+  errors: PropTypes.shape({
+    categoryError: PropTypes.string,
+    allTemplatesError: PropTypes.string,
+    templateError: PropTypes.string,
+  }),
 };
 CategoryAndTemplate.defaultProps = {
   jobCategories: [],
   jobTemplates: [],
   selectedTemplateID: null,
   selectedCategory: null,
+  errors: {},
 };
 
 export default CategoryAndTemplate;

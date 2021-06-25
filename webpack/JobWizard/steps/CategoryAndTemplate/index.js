@@ -8,6 +8,9 @@ import {
   selectJobTemplates,
   selectJobCategoriesStatus,
   filterJobTemplates,
+  selectCategoryError,
+  selectAllTemplatesError,
+  selectTemplateError,
 } from '../../JobWizardSelectors';
 import { CategoryAndTemplate } from './CategoryAndTemplate';
 
@@ -62,6 +65,11 @@ const ConnectedCategoryAndTemplate = ({
 
   const jobTemplates = useSelector(selectJobTemplates);
 
+  const errors = {
+    categoryError: useSelector(selectCategoryError),
+    allTemplatesError: useSelector(selectAllTemplatesError),
+    templateError: useSelector(selectTemplateError),
+  };
   return (
     <CategoryAndTemplate
       jobTemplates={jobTemplates}
@@ -70,6 +78,7 @@ const ConnectedCategoryAndTemplate = ({
       selectedTemplateID={jobTemplate}
       setCategory={setCategory}
       selectedCategory={category}
+      errors={errors}
     />
   );
 };

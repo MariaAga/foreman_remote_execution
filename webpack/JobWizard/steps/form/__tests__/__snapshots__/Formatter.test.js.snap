@@ -105,6 +105,7 @@ exports[`formatter render select input 1`] = `
   <mockConstructor
     className="without_select2"
     isOpen={false}
+    isRequired={false}
     maxHeight="45vh"
     menuAppendTo={[Function]}
     onSelect={[Function]}
@@ -154,6 +155,7 @@ exports[`formatter render text input 1`] = `
           aria-label="open-help-tooltip-button"
           className="pf-c-form__group-label-help"
           onClick={[Function]}
+          type="button"
         >
           <HelpIcon
             color="currentColor"

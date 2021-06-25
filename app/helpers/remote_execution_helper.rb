@@ -27,19 +27,19 @@ module RemoteExecutionHelper
 
     if authorized_for(hash_for_host_path(host).merge(auth_object: host, permission: :view_hosts, authorizer: job_hosts_authorizer))
       links << { title: _('Host detail'),
-                 action: { href: host_path(host), 'data-method': 'get', id: "#{host.name}-actions-detail" } }
+        action: { href: host_path(host), 'data-method': 'get', id: "#{host.name}-actions-detail" } }
     end
 
     if authorized_for(hash_for_rerun_job_invocation_path(id: job_invocation, host_ids: [ host.id ], authorizer: job_hosts_authorizer))
       links << { title: (_('Rerun on %s') % host.name),
-                 action: { href: rerun_job_invocation_path(job_invocation, host_ids: [ host.id ]),
-                           'data-method': 'get', id: "#{host.name}-actions-rerun" } }
+        action: { href: rerun_job_invocation_path(job_invocation, host_ids: [ host.id ]),
+                  'data-method': 'get', id: "#{host.name}-actions-rerun" } }
     end
 
     if host_task.present? && authorized_for(hash_for_foreman_tasks_task_path(host_task).merge(auth_object: host_task, permission: :view_foreman_tasks))
       links << { title: _('Host task'),
-                 action: { href: foreman_tasks_task_path(host_task),
-                           'data-method': 'get', id: "#{host.name}-actions-task" } }
+        action: { href: foreman_tasks_task_path(host_task),
+                  'data-method': 'get', id: "#{host.name}-actions-task" } }
     end
 
     links
@@ -60,6 +60,12 @@ module RemoteExecutionHelper
     job_invocation = task.task_groups.find { |group| group.class == JobInvocationTaskGroup }.job_invocation
     task_authorizer = Authorizer.new(User.current, :collection => [task])
     buttons = []
+    if (template = job_report_template) && authorized_for(controller: :report_templates, action: :generate)
+      buttons << link_to(_('Create Report'), generate_report_template_path(template, job_report_template_parameters(job_invocation, template)),
+        class: 'btn btn-default',
+        title: _('Create report for this job'),
+        disabled: task.pending?)
+    end
     if authorized_for(hash_for_new_job_invocation_path)
       buttons << link_to(_('Rerun'), rerun_job_invocation_path(:id => job_invocation.id),
         :class => 'btn btn-default',
@@ -153,11 +159,11 @@ module RemoteExecutionHelper
       content_tag :pre, preview
     elsif target.nil?
       alert :text => _('Could not render the preview because no host matches the search query.'),
-            :class => 'alert alert-block alert-warning base',
-            :close => false
+        :class => 'alert alert-block alert-warning base',
+        :close => false
     else
       alert :class => 'alert-block alert-danger base in fade has-error',
-            :text => renderer.error_message.html_safe # rubocop:disable Rails/OutputSafety
+        :text => renderer.error_message.html_safe # rubocop:disable Rails/OutputSafety
     end
   end
 
@@ -228,6 +234,27 @@ module RemoteExecutionHelper
     return if task.nil?
 
     task.execution_plan.actions[1].try(:input).try(:[], 'script')
+  end
+
+  def job_report_template
+    template = ReportTemplate.where(name: Setting['remote_execution_job_invocation_report_template']).first
+
+    template if template.template_inputs.where(name: 'job_id').exists?
+  end
+
+  def job_report_template_parameters(job_invocation, template)
+    template_input = template.template_inputs.where(name: 'job_id').first
+    raise "#job_report_template_parameters need template that has 'job_id' input" unless template_input
+
+    {
+      report_template_report: {
+        input_values: {
+          "#{template_input.id}": {
+            value: job_invocation.id,
+          },
+        },
+      },
+    }
   end
 
   def targeting_hosts(job_invocation, hosts)

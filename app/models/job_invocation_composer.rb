@@ -1,4 +1,7 @@
 class JobInvocationComposer
+  class JobTemplateNotFound < StandardError; end
+
+  class FeatureNotFound < StandardError; end
 
   class UiParams
     attr_reader :ui_params
@@ -64,6 +67,10 @@ class JobInvocationComposer
           values.merge(:template_input_id => id)
         end
 
+        provider_values_params = template_base.fetch(:provider_input_values, {})
+        template_base[:provider_input_values] = provider_values_params.map do |key, hash|
+          { :name => key, :value => hash[:value] }
+        end
         template_base
       end
     end
@@ -96,6 +103,17 @@ class JobInvocationComposer
 
     def initialize(api_params)
       @api_params = api_params
+
+      if api_params[:feature]
+        # set a default targeting type for backward compatibility
+        # when `for_feature` was used by the API it automatically set a default
+        api_params[:targeting_type] = Targeting::STATIC_TYPE
+      end
+
+      if api_params[:search_query].blank? && api_params[:host_ids].present?
+        translator = HostIdsTranslator.new(api_params[:host_ids])
+        api_params[:search_query] = translator.scoped_search
+      end
     end
 
     def params
@@ -103,10 +121,14 @@ class JobInvocationComposer
         :targeting => targeting_params,
         :triggering => triggering_params,
         :description_format => api_params[:description_format],
-        :remote_execution_feature_id => api_params[:remote_execution_feature_id],
+        :remote_execution_feature_id => remote_execution_feature_id,
         :concurrency_control => concurrency_control_params,
         :execution_timeout_interval => api_params[:execution_timeout_interval] || template.execution_timeout_interval,
         :template_invocations => template_invocations_params }.with_indifferent_access
+    end
+
+    def remote_execution_feature_id
+      feature&.id || api_params[:remote_execution_feature_id]
     end
 
     def targeting_params
@@ -147,6 +169,7 @@ class JobInvocationComposer
 
     def template_invocations_params
       template_invocation_params = { :template_id => template.id, :effective_user => api_params[:effective_user] }
+      template_invocation_params[:provider_input_values] = filter_provider_inputs api_params
       template_invocation_params[:input_values] = api_params.fetch(:inputs, {}).to_h.map do |name, value|
         input = template.template_inputs_with_foreign.find { |i| i.name == name }
         unless input
@@ -158,8 +181,27 @@ class JobInvocationComposer
       [template_invocation_params]
     end
 
+    def filter_provider_inputs(api_params)
+      return [] if template.provider.provider_input_namespace.empty?
+      inputs = api_params[template.provider.provider_input_namespace].to_h
+      provider_input_names = template.provider.provider_inputs.map(&:name)
+      inputs.select { |key, value| provider_input_names.include? key }.map { |key, value| { :name => key, :value => value } }
+    end
+
+    def feature
+      @feature ||= RemoteExecutionFeature.feature(api_params[:feature]) if api_params[:feature]
+    rescue => e
+      raise(FeatureNotFound, e.message)
+    end
+
+    def job_template_id
+      feature&.job_template_id || api_params[:job_template_id]
+    end
+
     def template
-      @template ||= JobTemplate.authorized(:view_job_templates).find(api_params[:job_template_id])
+      @template ||= JobTemplate.authorized(:view_job_templates).find(job_template_id)
+    rescue ActiveRecord::RecordNotFound
+      raise(JobTemplateNotFound, _("Template with id '%{id}' was not found") % { id: job_template_id })
     end
 
     private
@@ -227,25 +269,38 @@ class JobInvocationComposer
     end
   end
 
+  class HostIdsTranslator
+    attr_reader :bookmark, :hosts, :scoped_search, :host_ids
+
+    def initialize(input)
+      case input
+      when Bookmark
+        @bookmark = input
+      when Host::Base
+        @hosts = [input]
+      when Array
+        @hosts = input.map do |id|
+          Host::Managed.authorized.friendly.find(id)
+        end
+      when String
+        @scoped_search = input
+      else
+        @hosts = input
+      end
+
+      @scoped_search ||= Targeting.build_query_from_hosts(hosts.map(&:id)) if @hosts
+    end
+  end
+
   class ParamsForFeature
     attr_reader :feature_label, :feature, :provided_inputs
 
     def initialize(feature_label, hosts, provided_inputs = {})
       @feature = RemoteExecutionFeature.feature(feature_label)
       @provided_inputs = provided_inputs
-      if hosts.is_a? Bookmark
-        @host_bookmark = hosts
-      elsif hosts.is_a? Host::Base
-        @host_objects = [hosts]
-      elsif hosts.is_a? Array
-        @host_objects = hosts.map do |id|
-          Host::Managed.authorized.friendly.find(id)
-        end
-      elsif hosts.is_a? String
-        @host_scoped_search = hosts
-      else
-        @host_objects = hosts
-      end
+      translator = HostIdsTranslator.new(hosts)
+      @host_bookmark = translator.bookmark
+      @host_scoped_search = translator.scoped_search
     end
 
     def params
@@ -263,7 +318,6 @@ class JobInvocationComposer
       ret = {}
       ret['targeting_type'] = Targeting::STATIC_TYPE
       ret['search_query'] = @host_scoped_search if @host_scoped_search
-      ret['search_query'] = Targeting.build_query_from_hosts(@host_objects) if @host_objects
       ret['bookmark_id'] = @host_bookmark.id if @host_bookmark
       ret['user_id'] = User.current.id
       ret
@@ -503,6 +557,7 @@ class JobInvocationComposer
       input = template_invocation.template.template_inputs_with_foreign.find { |i| i.id.to_s == attributes[:template_input_id].to_s }
       input ? input.template_invocation_input_values.build(attributes) : nil
     end.compact
+    template_invocation.provider_input_values.build job_template_base.fetch('provider_input_values', [])
   end
 
   def build_targeting
@@ -540,7 +595,7 @@ class JobInvocationComposer
 
     params[:template_invocations].select { |t| valid_template_ids.include?(t[:template_id].to_i) }.map do |template_invocation_params|
       template_invocation = job_invocation.pattern_template_invocations.build(:template_id => template_invocation_params[:template_id],
-                                                                              :effective_user => build_effective_user(template_invocation_params))
+        :effective_user => build_effective_user(template_invocation_params))
       build_input_values_for(template_invocation, template_invocation_params)
       template_invocation
     end

@@ -14,6 +14,7 @@ export const GroupedSelectField = ({
   groups,
   selected,
   setSelected,
+  ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const onSelect = selection => {
@@ -68,6 +69,7 @@ export const GroupedSelectField = ({
         className="without_select2"
         onClear={onClear}
         menuAppendTo={() => document.body}
+        {...props}
       >
         {options}
       </Select>

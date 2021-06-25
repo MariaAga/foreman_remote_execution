@@ -1,8 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { Form } from '@patternfly/react-core';
-import { selectJobTemplate } from '../../JobWizardSelectors';
+import { Title, Form } from '@patternfly/react-core';
+import { translate as __ } from 'foremanReact/common/I18n';
+import {
+  selectEffectiveUser,
+  selectTemplateInputs,
+} from '../../JobWizardSelectors';
 import {
   EffectiveUserField,
   TimeoutToKillField,
@@ -13,84 +17,96 @@ import {
   TimeSpanLevelField,
   TemplateInputsFields,
 } from './Fields';
+import { DescriptionField } from './DescriptionField';
 
-export const AdvancedFields = ({ advancedValue, setAdvancedValue }) => {
-  const jobTemplate = useSelector(selectJobTemplate);
-  const effectiveUser = jobTemplate.effective_user;
-  const templateInputs = jobTemplate.template_inputs_with_foreign;
+export const AdvancedFields = ({ advancedValues, setAdvancedValues }) => {
+  const effectiveUser = useSelector(selectEffectiveUser);
+  const templateInputs = useSelector(selectTemplateInputs);
   return (
-    <Form id="advanced-fields-job-template">
-      <TemplateInputsFields
-        inputs={templateInputs}
-        value={advancedValue.templateValues}
-        setValue={newValue =>
-          setAdvancedValue({ ...advancedValue, templateValues: newValue })
-        }
-      />
-      {effectiveUser?.overridable && (
-        <EffectiveUserField
-          value={advancedValue.effectiveUserValue}
+    <>
+      <Title headingLevel="h2" className="advanced-fields-title">
+        {__('Advanced Fields')}
+      </Title>
+      <Form id="advanced-fields-job-template" autoComplete="off">
+        <TemplateInputsFields
+          inputs={templateInputs}
+          value={advancedValues.templateValues}
           setValue={newValue =>
-            setAdvancedValue({
-              effectiveUserValue: newValue,
+            setAdvancedValues({ ...advancedValues, templateValues: newValue })
+          }
+        />
+        {effectiveUser?.overridable && (
+          <EffectiveUserField
+            value={advancedValues.effectiveUserValue}
+            setValue={newValue =>
+              setAdvancedValues({
+                effectiveUserValue: newValue,
+              })
+            }
+          />
+        )}
+        <DescriptionField
+          inputs={templateInputs.filter(input => !input.advanced)}
+          value={advancedValues.description}
+          setValue={newValue =>
+            setAdvancedValues({ ...advancedValues, description: newValue })
+          }
+        />
+        <TimeoutToKillField
+          value={advancedValues.timeoutToKill}
+          setValue={newValue =>
+            setAdvancedValues({
+              timeoutToKill: newValue,
             })
           }
         />
-      )}
-      <TimeoutToKillField
-        value={advancedValue.timeoutToKill}
-        setValue={newValue =>
-          setAdvancedValue({
-            timeoutToKill: newValue,
-          })
-        }
-      />
-      <PasswordField
-        value={advancedValue.password}
-        setValue={newValue =>
-          setAdvancedValue({
-            password: newValue,
-          })
-        }
-      />
-      <KeyPassphraseField
-        value={advancedValue.keyPassphrase}
-        setValue={newValue =>
-          setAdvancedValue({
-            keyPassphrase: newValue,
-          })
-        }
-      />
-      <EffectiveUserPasswordField
-        value={advancedValue.effectiveUserPassword}
-        setValue={newValue =>
-          setAdvancedValue({
-            effectiveUserPassword: newValue,
-          })
-        }
-      />
-      <ConcurrencyLevelField
-        value={advancedValue.concurrencyLevel}
-        setValue={newValue =>
-          setAdvancedValue({
-            concurrencyLevel: newValue,
-          })
-        }
-      />
-      <TimeSpanLevelField
-        value={advancedValue.timeSpan}
-        setValue={newValue =>
-          setAdvancedValue({
-            timeSpan: newValue,
-          })
-        }
-      />
-    </Form>
+        <PasswordField
+          value={advancedValues.password}
+          setValue={newValue =>
+            setAdvancedValues({
+              password: newValue,
+            })
+          }
+        />
+        <KeyPassphraseField
+          value={advancedValues.keyPassphrase}
+          setValue={newValue =>
+            setAdvancedValues({
+              keyPassphrase: newValue,
+            })
+          }
+        />
+        <EffectiveUserPasswordField
+          value={advancedValues.effectiveUserPassword}
+          setValue={newValue =>
+            setAdvancedValues({
+              effectiveUserPassword: newValue,
+            })
+          }
+        />
+        <ConcurrencyLevelField
+          value={advancedValues.concurrencyLevel}
+          setValue={newValue =>
+            setAdvancedValues({
+              concurrencyLevel: newValue,
+            })
+          }
+        />
+        <TimeSpanLevelField
+          value={advancedValues.timeSpan}
+          setValue={newValue =>
+            setAdvancedValues({
+              timeSpan: newValue,
+            })
+          }
+        />
+      </Form>
+    </>
   );
 };
 
 AdvancedFields.propTypes = {
-  advancedValue: PropTypes.object.isRequired,
-  setAdvancedValue: PropTypes.func.isRequired,
+  advancedValues: PropTypes.object.isRequired,
+  setAdvancedValues: PropTypes.func.isRequired,
 };
 export default AdvancedFields;

@@ -15,8 +15,9 @@ class JobInvocation < ApplicationRecord
 
   belongs_to :targeting, :dependent => :destroy
   has_many :all_template_invocations, :inverse_of => :job_invocation, :dependent => :destroy, :class_name => 'TemplateInvocation'
-  has_many :template_invocations, -> { where('host_id IS NOT NULL') }, :inverse_of => :job_invocation
-  has_many :pattern_template_invocations, -> { where('host_id IS NULL') }, :inverse_of => :job_invocation, :class_name => 'TemplateInvocation'
+  has_many :template_invocations, -> { where('template_invocations.host_id IS NOT NULL') }, :inverse_of => :job_invocation
+  has_many :pattern_template_invocations, -> { where('template_invocations.host_id IS NULL') }, :inverse_of => :job_invocation, :class_name => 'TemplateInvocation'
+  has_many :pattern_templates, :through => :pattern_template_invocations, :source => :template
 
   validates :targeting, :presence => true
   validates :job_category, :presence => true
@@ -44,26 +45,33 @@ class JobInvocation < ApplicationRecord
                                        :source => 'run_host_job_task'
   has_one :user, through: :task
   scoped_search relation: :user, on: :login, rename: 'user', complete_value: true,
-                value_translation: ->(value) { value == 'current_user' ? User.current.login : value },
-                special_values: [:current_user], aliases: ['owner'], :only_explicit => true
+    value_translation: ->(value) { value == 'current_user' ? User.current.login : value },
+    special_values: [:current_user], aliases: ['owner'], :only_explicit => true
   scoped_search :relation => :task, :on => :started_at, :rename => 'started_at', :complete_value => true
   scoped_search :relation => :task, :on => :start_at, :rename => 'start_at', :complete_value => true
   scoped_search :relation => :task, :on => :ended_at, :rename => 'ended_at', :complete_value => true
   scoped_search :relation => :task, :on => :state, :rename => 'status', :ext_method => :search_by_status,
-                :only_explicit => true, :complete_value => Hash[HostStatus::ExecutionStatus::STATUS_NAMES.values.map { |v| [v, v] }]
+    :only_explicit => true, :complete_value => Hash[HostStatus::ExecutionStatus::STATUS_NAMES.values.map { |v| [v, v] }]
 
   belongs_to :triggering, :class_name => 'ForemanTasks::Triggering'
   has_one :recurring_logic, :through => :triggering, :class_name => 'ForemanTasks::RecurringLogic'
 
   belongs_to :remote_execution_feature
 
+  has_many :targeted_hosts, :through => :targeting, :source => :hosts
+  scoped_search :on => 'targeted_host_id', :rename => 'targeted_host_id', :operators => ['= '],
+    :complete_value => false, :only_explicit => true, :ext_method => :search_by_targeted_host
+
+  scoped_search :on => 'pattern_template_name', :rename => 'pattern_template_name', :operators => ['= '],
+    :complete_value => false, :only_explicit => true, :ext_method => :search_by_pattern_template
+
   scope :with_task, -> { references(:task) }
 
   scoped_search :relation => :recurring_logic, :on => 'id', :rename => 'recurring_logic.id'
 
   scoped_search :relation => :recurring_logic, :on => 'id', :rename => 'recurring',
-                :ext_method => :search_by_recurring_logic, :only_explicit => true,
-                :complete_value => { :true => true, :false => false }
+    :ext_method => :search_by_recurring_logic, :only_explicit => true,
+    :complete_value => { :true => true, :false => false }
 
   default_scope -> { order('job_invocations.id DESC') }
 
@@ -75,6 +83,18 @@ class JobInvocation < ApplicationRecord
   delegate :start_at, :to => :task, :allow_nil => true
 
   encrypts :password, :key_passphrase, :effective_user_password
+
+  class Jail < Safemode::Jail
+    allow :sub_task_for_host, :template_invocations_hosts
+  end
+
+  def self.search_by_targeted_host(key, operator, value)
+    { :conditions => sanitize_sql_for_conditions(["hosts.id = ?", value]), :joins => :targeted_hosts }
+  end
+
+  def self.search_by_pattern_template(key, operator, value)
+    { :conditions => sanitize_sql_for_conditions(["templates.name = ?", value]), :joins => :pattern_templates }
+  end
 
   def self.search_by_status(key, operator, value)
     conditions = HostStatus::ExecutionStatus::ExecutionTaskStatusMapper.sql_conditions_for(value)

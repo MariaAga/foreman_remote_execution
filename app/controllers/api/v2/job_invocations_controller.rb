@@ -64,24 +64,31 @@ module Api
           param :description_format, String, :required => false, :desc => N_('Override the description format from the template for this invocation only')
           param :execution_timeout_interval, Integer, :required => false, :desc => N_('Override the timeout interval from the template for this invocation only')
           param :feature, String, :required => false, :desc => N_('Remote execution feature label that should be triggered, job template assigned to this feature will be used')
+
+          RemoteExecutionProvider.providers.each_value do |provider|
+            next if !provider.respond_to?(:provider_inputs_doc) || provider.provider_inputs_doc.empty?
+            doc = provider.provider_inputs_doc
+            param doc[:namespace], Hash, doc[:opts] do
+              doc[:children].map do |input|
+                param input[:name], input[:type], input[:opts]
+              end
+            end
+          end
         end
       end
 
       api :POST, '/job_invocations/', N_('Create a job invocation')
       param_group :job_invocation, :as => :create
       def create
-        if job_invocation_params[:feature].present?
-          composer = composer_for_feature
-        else
-          validate_template
-          composer = JobInvocationComposer.from_api_params(
-            job_invocation_params
-          )
-        end
+        composer = JobInvocationComposer.from_api_params(
+          job_invocation_params
+        )
         composer.trigger!
         @job_invocation = composer.job_invocation
         @hosts = @job_invocation.targeting.hosts
         process_response @job_invocation
+      rescue JobInvocationComposer::JobTemplateNotFound, JobInvocationComposer::FeatureNotFound => e
+        not_found(error: { message: e.message })
       end
 
       api :GET, '/job_invocations/:id/hosts/:host_id', N_('Get output for a host')
@@ -118,7 +125,7 @@ module Api
           render :json => { :cancelled => result, :id => @job_invocation.id }
         else
           render :json => { :message => _('The job could not be cancelled.') },
-                 :status => :unprocessable_entity
+            :status => :unprocessable_entity
         end
       end
 
@@ -133,7 +140,7 @@ module Api
           process_response @job_invocation
         else
           render :json => { :error => _('Could not rerun job %{id} because its template could not be found') % { :id => composer.reruns } },
-                 :status => :not_found
+            :status => :not_found
         end
       end
 
@@ -180,30 +187,28 @@ module Api
         not_found({ :error => { :message => (_("Host with id '%{id}' was not found") % { :id => params['host_id'] }) } })
       end
 
-      def validate_template
-        JobTemplate.authorized(:view_job_templates).find(job_invocation_params['job_template_id'])
-      rescue ActiveRecord::RecordNotFound
-        not_found({ :error => { :message => (_("Template with id '%{id}' was not found") % { :id => job_invocation_params['job_template_id'] }) } })
-      end
-
       def job_invocation_params
         return @job_invocation_params if @job_invocation_params.present?
 
         job_invocation_params = params.fetch(:job_invocation, {}).dup
+
+        if job_invocation_params[:feature].present? && job_invocation_params[:job_template_id].present?
+          raise _("Only one of feature or job_template_id can be specified")
+        end
+
         if job_invocation_params.key?(:ssh)
           job_invocation_params.merge!(job_invocation_params.delete(:ssh).permit(:effective_user))
         end
+
         job_invocation_params[:inputs] ||= {}
         job_invocation_params[:inputs].permit!
+        permit_provider_inputs job_invocation_params
         @job_invocation_params = job_invocation_params
       end
 
-      def composer_for_feature
-        JobInvocationComposer.for_feature(
-          job_invocation_params[:feature],
-          job_invocation_params[:host_ids],
-          job_invocation_params[:inputs].to_hash
-        )
+      def permit_provider_inputs(invocation_params)
+        providers = RemoteExecutionProvider.providers.values.reject { |provider| !provider.respond_to?(:provider_input_namespace) || provider.provider_input_namespace.empty? }
+        providers.each { |provider| invocation_params[provider.provider_input_namespace]&.permit! }
       end
 
       def output_lines_since(task, time)

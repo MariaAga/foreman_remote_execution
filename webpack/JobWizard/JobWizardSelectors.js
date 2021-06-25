@@ -1,6 +1,7 @@
 import {
   selectAPIResponse,
   selectAPIStatus,
+  selectAPIErrorMessage,
 } from 'foremanReact/redux/API/APISelectors';
 
 import {
@@ -24,5 +25,20 @@ export const selectJobCategories = state =>
 export const selectJobCategoriesStatus = state =>
   selectAPIStatus(state, JOB_CATEGORIES);
 
+export const selectCategoryError = state =>
+  selectAPIErrorMessage(state, JOB_CATEGORIES);
+
+export const selectAllTemplatesError = state =>
+  selectAPIErrorMessage(state, JOB_TEMPLATES);
+
+export const selectTemplateError = state =>
+  selectAPIErrorMessage(state, JOB_TEMPLATE);
+
 export const selectJobTemplate = state =>
-  selectAPIResponse(state, JOB_TEMPLATE) || {};
+  selectAPIResponse(state, JOB_TEMPLATE);
+
+export const selectEffectiveUser = state =>
+  selectAPIResponse(state, JOB_TEMPLATE).effective_user;
+
+export const selectTemplateInputs = state =>
+  selectAPIResponse(state, JOB_TEMPLATE).template_inputs_with_foreign || [];

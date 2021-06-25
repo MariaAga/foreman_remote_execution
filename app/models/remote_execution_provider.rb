@@ -20,7 +20,7 @@ class RemoteExecutionProvider
     end
 
     def proxy_command_options(template_invocation, host)
-      {:proxy_operation_name => proxy_operation_name}
+      {:proxy_operation_name => proxy_operation_name}.merge(proxy_command_provider_inputs(template_invocation))
     end
 
     def secrets(_host)
@@ -33,6 +33,9 @@ class RemoteExecutionProvider
 
     def humanized_name
       self.name
+    end
+
+    def provider_input_namespace
     end
 
     def supports_effective_user?
@@ -95,8 +98,20 @@ class RemoteExecutionProvider
     def ssh_key_passphrase(_host)
     end
 
+    def provider_inputs
+      []
+    end
+
+    def provider_inputs_doc
+      {}
+    end
+
+    def proxy_command_provider_inputs(template_invocation)
+      {}
+    end
+
     def proxy_action_class
-      ForemanRemoteExecutionCore::Actions::RunScript
+      'ForemanRemoteExecutionCore::Actions::RunScript'
     end
 
     # Return a specific proxy selector to use for running a given template

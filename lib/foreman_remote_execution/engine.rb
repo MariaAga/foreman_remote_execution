@@ -1,5 +1,3 @@
-require 'foreman_remote_execution_core'
-
 module ForemanRemoteExecution
   DYNFLOW_QUEUE = :remote_execution
 
@@ -53,14 +51,13 @@ module ForemanRemoteExecution
 
     initializer 'foreman_remote_execution.register_plugin', before: :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_remote_execution do
-        register_global_js_file 'global'
         requires_foreman '>= 2.2'
+        register_global_js_file 'global'
 
         apipie_documented_controllers ["#{ForemanRemoteExecution::Engine.root}/app/controllers/api/v2/*.rb"]
         ApipieDSL.configuration.dsl_classes_matchers += [
           "#{ForemanRemoteExecution::Engine.root}/app/lib/foreman_remote_execution/renderer/**/*.rb",
         ]
-
         automatic_assets(false)
         precompile_assets(*assets_to_precompile)
 
@@ -155,6 +152,8 @@ module ForemanRemoteExecution
           ctx.permit :execution
         end
 
+        extend_template_helpers ForemanRemoteExecution::RendererMethods
+
         extend_rabl_template 'api/v2/smart_proxies/main', 'api/v2/smart_proxies/pubkey'
         extend_rabl_template 'api/v2/interfaces/main', 'api/v2/interfaces/execution_flag'
         extend_rabl_template 'api/v2/subnets/show', 'api/v2/subnets/remote_execution_proxies'
@@ -163,11 +162,15 @@ module ForemanRemoteExecution
 
         # Extend Registration module
         extend_allowed_registration_vars :remote_execution_interface
-        extend_page 'registration/_form' do |cx|
-          cx.add_pagelet :global_registration, name: N_('Remote Execution'), partial: 'api/v2/registration/form', priority: 100, id: 'remote_execution_interface'
-        end
         ForemanTasks.dynflow.eager_load_actions!
-        extend_observable_events(::Dynflow::Action.descendants.select { |klass| klass <= ::Actions::ObservableAction }.map(&:namespaced_event_names))
+        extend_observable_events(
+          ::Dynflow::Action.descendants.select do |klass|
+            klass <= ::Actions::ObservableAction
+          end.map(&:namespaced_event_names) +
+          RemoteExecutionFeature.all.pluck(:label).map do |label|
+            ::Actions::RemoteExecution::RunHostJob.feature_job_event_name(label)
+          end
+        )
       end
     end
 
@@ -226,6 +229,7 @@ module ForemanRemoteExecution
       ::Api::V2::SubnetsController.include ::ForemanRemoteExecution::Concerns::Api::V2::SubnetsControllerExtensions
       ::Api::V2::RegistrationController.prepend ::ForemanRemoteExecution::Concerns::Api::V2::RegistrationControllerExtensions
       ::Api::V2::RegistrationController.include ::ForemanRemoteExecution::Concerns::Api::V2::RegistrationControllerExtensions::ApipieExtensions
+      ::Api::V2::RegistrationCommandsController.include ::ForemanRemoteExecution::Concerns::Api::V2::RegistrationCommandsControllerExtensions::ApipieExtensions
     end
 
     initializer 'foreman_remote_execution.register_gettext', after: :load_config_initializers do |_app|
