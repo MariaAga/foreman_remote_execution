@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const SearchBar = ({ onChange }) => (
   <input
@@ -8,3 +9,11 @@ const SearchBar = ({ onChange }) => (
   />
 );
 export default SearchBar;
+
+SearchBar.propTypes = {
+  onChange: PropTypes.func,
+};
+
+SearchBar.defaultProps = {
+  onChange: () => null,
+};

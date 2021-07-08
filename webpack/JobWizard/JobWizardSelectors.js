@@ -9,6 +9,7 @@ import {
   JOB_TEMPLATES,
   JOB_CATEGORIES,
   JOB_TEMPLATE,
+  HOSTS_API,
 } from './JobWizardConstants';
 
 export const selectJobTemplatesStatus = state =>
@@ -25,7 +26,7 @@ export const selectJobCategories = state =>
 
 export const selectWithKatello = state =>
   selectAPIResponse(state, JOB_CATEGORIES).with_katello || false;
-  
+
 export const selectJobCategoriesStatus = state =>
   selectAPIStatus(state, JOB_CATEGORIES);
 
@@ -49,6 +50,12 @@ export const selectAdvancedTemplateInputs = state =>
 
 export const selectTemplateInputs = state =>
   selectAPIResponse(state, JOB_TEMPLATE).template_inputs || [];
+
+export const selectHostCount = state =>
+  selectAPIResponse(state, HOSTS_API).subtotal || 0;
+
+export const selectHosts = state =>
+  (selectAPIResponse(state, HOSTS_API).results || []).map(host => host.name);
 
 export const selectResponse = selectAPIResponse;
 

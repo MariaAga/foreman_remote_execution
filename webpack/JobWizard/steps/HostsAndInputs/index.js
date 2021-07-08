@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Title,
   Button,
@@ -6,18 +6,26 @@ import {
   FormGroup,
   InputGroup,
   Text,
+  Spinner,
 } from '@patternfly/react-core';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { FilterIcon } from '@patternfly/react-icons';
+import { debounce } from 'lodash';
+import { get } from 'foremanReact/redux/API';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { resetData } from 'foremanReact/components/AutoComplete/AutoCompleteActions';
-import { selectJobTemplate, selectWithKatello } from '../../JobWizardSelectors';
+import {
+  selectJobTemplate,
+  selectWithKatello,
+  selectHostCount,
+} from '../../JobWizardSelectors';
 import { SelectField } from '../form/SelectField';
 import { SelectedChips } from './SelectedChips';
 import { TemplateInputs } from './TemplateInputs';
 import { HostSelect } from './HostSelect';
 import { HostSearch } from './HostSearch';
+import { HostPreviewModal } from './HostPreviewModal';
 import {
   HOSTS,
   HOST_COLLECTIONS,
@@ -25,7 +33,28 @@ import {
   hostMethods,
   hostsController,
   hostQuerySearchID,
+  HOSTS_API,
+  hostsToPreviewAmount,
 } from '../../JobWizardConstants';
+
+const buildQuery = (selected, search) => {
+  const { hosts, hostCollections, hostGroups } = selected;
+  const hostsSearch = `(name = ${hosts.join(' or name = ')})`;
+  const hostCollectionsSearch = `(host_collection = ${hostCollections.join(
+    ' or host_collection = '
+  )})`;
+  const hostGroupsSearch = `(host_group = ${hostGroups.join(
+    ' or host_group = '
+  )})`;
+  return [
+    hosts.length ? hostsSearch : false,
+    hostCollections.length ? hostCollectionsSearch : false,
+    hostGroups.length ? hostGroupsSearch : false,
+    search.length ? `(${search})` : false,
+  ]
+    .filter(Boolean)
+    .join(' or ');
+};
 
 const HostsAndInputs = ({
   templateValues,
@@ -35,8 +64,33 @@ const HostsAndInputs = ({
   hostsSearchQuery,
   setHostsSearchQuery,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    debounce(() => {
+      setIsLoading(true);
+      dispatch(
+        get({
+          key: HOSTS_API,
+          url: '/api/hosts',
+          params: {
+            search: buildQuery(selected, hostsSearchQuery),
+            per_page: hostsToPreviewAmount,
+          },
+          handleSuccess: () => setIsLoading(false),
+        })
+      );
+    }, 700)();
+  }, [
+    dispatch,
+    selected,
+    selected.hosts,
+    selected.hostCollections,
+    selected.hostCollections,
+    hostsSearchQuery,
+  ]);
   const templateInputs = useSelector(selectJobTemplate).template_inputs || [];
   const withKatello = useSelector(selectWithKatello);
+  const hostCount = useSelector(selectHostCount);
   const dispatch = useDispatch();
 
   const selectedHosts = selected.hosts;
@@ -64,8 +118,14 @@ const HostsAndInputs = ({
     setHostsSearchQuery('');
   };
   const [hostMethod, setHostMethod] = useState(hostMethods.hosts);
+  const [hostPreviewOpen, setHostPreviewOpen] = useState(false);
   return (
     <div className="target-hosts-and-inputs">
+      <HostPreviewModal
+        isOpen={hostPreviewOpen}
+        setIsOpen={setHostPreviewOpen}
+        searchQuery={buildQuery(selected, hostsSearchQuery)}
+      />
       <Title headingLevel="h2" className="wizard-title">
         {__('Target hosts and inputs')}
       </Title>
@@ -127,9 +187,14 @@ const HostsAndInputs = ({
         />
         <Text>
           {__('Apply to')}{' '}
-          <Button variant="link" isInline>
-            {selectedHosts.length} {__('hosts')}
-          </Button>
+          <Button
+            variant="link"
+            isInline
+            onClick={() => setHostPreviewOpen(true)}
+          >
+            {hostCount} {__('hosts')}
+          </Button>{' '}
+          {isLoading && <Spinner size="sm" />}
         </Text>
         <TemplateInputs
           inputs={templateInputs}
