@@ -14,10 +14,10 @@ import {
   EffectiveUserPasswordField,
   ConcurrencyLevelField,
   TimeSpanLevelField,
-  TemplateInputsFields,
 } from './Fields';
 import { WIZARD_TITLES } from '../../JobWizardConstants';
 import { WizardTitle } from '../form/WizardTitle';
+import { TemplateInputsFields } from '../form/TemplateInputsFields';
 
 export const AdvancedFields = ({ advancedValues, setAdvancedValues }) => {
   const effectiveUser = useSelector(selectEffectiveUser);

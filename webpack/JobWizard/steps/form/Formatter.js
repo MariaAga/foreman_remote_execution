@@ -1,53 +1,11 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { FormGroup, TextInput, TextArea } from '@patternfly/react-core';
+import React from 'react';
 import PropTypes from 'prop-types';
-import SearchBar from 'foremanReact/components/SearchBar';
+import { FormGroup, TextInput, TextArea } from '@patternfly/react-core';
 import { helpLabel } from './FormHelpers';
 import { SelectField } from './SelectField';
+import { TemplateSearchField } from './TemplateSearchField';
 
-const TemplateSearchField = ({
-  name,
-  controller,
-  labelText,
-  required,
-  defaultValue,
-  setValue,
-  values,
-}) => {
-  const searchQuery = useSelector(
-    state => state.autocomplete?.[name]?.searchQuery
-  );
-  useEffect(() => {
-    setValue({ ...values, [name]: searchQuery });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery]);
-  const id = name.replace(/ /g, '-');
-  return (
-    <FormGroup
-      label={name}
-      labelIcon={helpLabel(labelText, name)}
-      fieldId={id}
-      isRequired={required}
-      className="foreman-search-field"
-    >
-      <SearchBar
-        initialQuery={defaultValue}
-        data={{
-          controller,
-          autocomplete: {
-            id: name,
-            url: `/${controller}/auto_complete_search`,
-            useKeyShortcuts: true,
-          },
-        }}
-        onSearch={() => null}
-      />
-    </FormGroup>
-  );
-};
-
-export const formatter = (input, values, setValue) => {
+export const Formatter = ({ input, values, setValue }) => {
   const isSelectType = !!input?.options;
   const inputType = input.value_type;
   const isTextType = inputType === 'plain' || !inputType; // null defaults to plain
@@ -135,16 +93,8 @@ export const formatter = (input, values, setValue) => {
   return null;
 };
 
-TemplateSearchField.propTypes = {
-  name: PropTypes.string.isRequired,
-  controller: PropTypes.string.isRequired,
-  labelText: PropTypes.string,
-  required: PropTypes.bool.isRequired,
-  defaultValue: PropTypes.string,
+Formatter.propTypes = {
+  input: PropTypes.object.isRequired,
   setValue: PropTypes.func.isRequired,
   values: PropTypes.object.isRequired,
-};
-TemplateSearchField.defaultProps = {
-  labelText: null,
-  defaultValue: '',
 };

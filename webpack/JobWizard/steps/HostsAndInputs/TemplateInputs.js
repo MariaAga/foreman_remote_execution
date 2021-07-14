@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { translate as __ } from 'foremanReact/common/I18n';
-import { formatter } from '../form/Formatter';
+import { TemplateInputsFields } from '../form/TemplateInputsFields';
 
 export const TemplateInputs = ({ inputs, value, setValue }) => {
   if (inputs.length)
-    return inputs.map(input => formatter(input, value, setValue));
+    return (
+      <TemplateInputsFields inputs={inputs} value={value} setValue={setValue} />
+    );
   return (
     <p className="gray-text">
       {__('There are no available input fields for the selected template.')}

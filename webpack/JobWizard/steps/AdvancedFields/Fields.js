@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { FormGroup, TextInput } from '@patternfly/react-core';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { helpLabel } from '../form/FormHelpers';
-import { formatter } from '../form/Formatter';
 import { NumberInput } from '../form/NumberInput';
 
 export const EffectiveUserField = ({ value, setValue }) => (
@@ -161,9 +160,6 @@ export const TimeSpanLevelField = ({ value, setValue }) => (
   />
 );
 
-export const TemplateInputsFields = ({ inputs, value, setValue }) => (
-  <>{inputs?.map(input => formatter(input, value, setValue))}</>
-);
 EffectiveUserField.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   setValue: PropTypes.func.isRequired,
@@ -184,12 +180,3 @@ ConcurrencyLevelField.propTypes = EffectiveUserField.propTypes;
 ConcurrencyLevelField.defaultProps = EffectiveUserField.defaultProps;
 TimeSpanLevelField.propTypes = EffectiveUserField.propTypes;
 TimeSpanLevelField.defaultProps = EffectiveUserField.defaultProps;
-TemplateInputsFields.propTypes = {
-  inputs: PropTypes.array.isRequired,
-  value: PropTypes.object,
-  setValue: PropTypes.func.isRequired,
-};
-
-TemplateInputsFields.defaultProps = {
-  value: {},
-};
