@@ -15,16 +15,23 @@ import {
 
 const store = testSetup(selectors, api);
 
-selectors.selectJobTemplate.mockImplementation(() => {});
-
-api.get.mockImplementation(({ handleSuccess, ...action }) => {
-  if (action.key === 'JOB_CATEGORIES') {
-    handleSuccess && handleSuccess({ data: { job_categories: jobCategories } });
-  }
-  return { type: 'get', ...action };
-});
 describe('Job wizard fill', () => {
   it('should select template', async () => {
+    api.get.mockImplementation(({ handleSuccess, ...action }) => {
+      if (action.key === 'JOB_CATEGORIES') {
+        handleSuccess &&
+          handleSuccess({ data: { job_categories: jobCategories } });
+      } else if (action.key === 'JOB_TEMPLATE') {
+        handleSuccess &&
+          handleSuccess({
+            data: jobTemplate,
+          });
+      }
+      return { type: 'get', ...action };
+    });
+    selectors.selectJobTemplate.mockRestore();
+    jest.spyOn(selectors, 'selectJobTemplate');
+    selectors.selectJobTemplate.mockImplementation(() => ({}));
     const wrapper = mount(
       <Provider store={store}>
         <JobWizard advancedValues={{}} setAdvancedValues={jest.fn()} />
@@ -53,7 +60,6 @@ describe('Job wizard fill', () => {
 
   it('have all steps', async () => {
     selectors.selectJobCategoriesStatus.mockImplementation(() => null);
-    selectors.selectJobTemplate.mockRestore();
     selectors.selectJobTemplates.mockRestore();
     selectors.selectJobCategories.mockRestore();
     mockApi(api);

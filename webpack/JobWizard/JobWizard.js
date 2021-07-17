@@ -6,16 +6,17 @@ import history from 'foremanReact/history';
 import CategoryAndTemplate from './steps/CategoryAndTemplate/';
 import { AdvancedFields } from './steps/AdvancedFields/AdvancedFields';
 import { JOB_TEMPLATE, WIZARD_TITLES } from './JobWizardConstants';
-import { selectTemplateError } from './JobWizardSelectors';
+import { selectTemplateError, selectJobTemplate } from './JobWizardSelectors';
 import Schedule from './steps/Schedule/';
 import HostsAndInputs from './steps/HostsAndInputs/';
+import { useValidation } from './validation';
 import './JobWizard.scss';
 
 export const JobWizard = () => {
   const [jobTemplateID, setJobTemplateID] = useState(null);
   const [category, setCategory] = useState('');
 
-  const [advancedValues, setAdvancedValues] = useState({});
+  const [advancedValues, setAdvancedValues] = useState({ templateValues: {} });
   const [templateValues, setTemplateValues] = useState({}); // TODO use templateValues in advanced fields - description
   const [selectedHosts, setSelectedHosts] = useState(['host1', 'host2']);
   const dispatch = useDispatch();
@@ -56,8 +57,15 @@ export const JobWizard = () => {
     }
   }, [jobTemplateID, setDefaults, dispatch]);
 
+  const valid = useValidation({
+    advancedValues,
+    templateValues,
+  });
   const templateError = !!useSelector(selectTemplateError);
-  const isTemplate = !templateError && !!jobTemplateID;
+  const templateResponse = useSelector(selectJobTemplate);
+  const isTemplate =
+    !templateError && !!jobTemplateID && templateResponse.job_template;
+
   const steps = [
     {
       name: WIZARD_TITLES.categoryAndTemplate,
@@ -96,18 +104,18 @@ export const JobWizard = () => {
           jobTemplateID={jobTemplateID}
         />
       ),
-      canJumpTo: isTemplate,
+      canJumpTo: isTemplate && valid.hostsAndInputs,
     },
     {
       name: WIZARD_TITLES.schedule,
       component: <Schedule />,
-      canJumpTo: isTemplate,
+      canJumpTo: isTemplate && valid.hostsAndInputs && valid.advanced,
     },
     {
       name: WIZARD_TITLES.review,
       component: <p>Review Details</p>,
       nextButtonText: 'Run',
-      canJumpTo: isTemplate,
+      canJumpTo: isTemplate && valid.hostsAndInputs && valid.advanced,
     },
   ];
   return (

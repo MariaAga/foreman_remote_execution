@@ -106,15 +106,12 @@ export const testSetup = (selectors, api) => {
     jobTemplate,
     { ...jobTemplate, id: 2, name: 'template2' },
   ]);
+  selectors.selectJobTemplate.mockImplementation(() => jobTemplateResponse);
   const mockStore = configureMockStore([]);
   const store = mockStore({});
   return store;
 };
 
-export const mockTemplate = selectors => {
-  selectors.selectJobTemplate.mockImplementation(() => jobTemplate);
-  selectors.selectJobCategoriesStatus.mockImplementation(() => 'RESOLVED');
-};
 export const mockApi = api => {
   api.get.mockImplementation(({ handleSuccess, ...action }) => {
     if (action.key === 'JOB_CATEGORIES') {
