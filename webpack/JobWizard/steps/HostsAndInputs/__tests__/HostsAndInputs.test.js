@@ -64,4 +64,34 @@ describe('Hosts', () => {
     expect(screen.queryAllByText('host2')).toHaveLength(1);
     expect(screen.queryAllByText('host_group1')).toHaveLength(1);
   });
+  it('Host fill list from url', async () => {
+    render(
+      <Provider store={store}>
+        <JobWizard fills={{ 'host_ids[]': ['host1', 'host3'] }} />
+      </Provider>
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByText('Target hosts and inputs'));
+    });
+    api.get.mock.calls.forEach(call => {
+      if (call[0].key === 'HOST_IDS') {
+        expect(call[0].params).toEqual({ search: 'id = host1 or id = host3' });
+      }
+    });
+
+    expect(screen.queryAllByText('host1')).toHaveLength(1);
+    expect(screen.queryAllByText('host2')).toHaveLength(0);
+    expect(screen.queryAllByText('host3')).toHaveLength(1);
+  });
+  it('Host fill search from url', async () => {
+    render(
+      <Provider store={store}>
+        <JobWizard fills={{ search: 'os = gnome' }} />
+      </Provider>
+    );
+    await act(async () => {
+      fireEvent.click(screen.getByText('Target hosts and inputs'));
+    });
+    expect(screen.queryAllByText('os = gnome')).toHaveLength(1);
+  });
 });

@@ -1,10 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import URI from 'urijs';
 import { Title, Divider } from '@patternfly/react-core';
 import { translate as __ } from 'foremanReact/common/I18n';
 import PageLayout from 'foremanReact/routes/common/PageLayout/PageLayout';
 import { JobWizard } from './JobWizard';
 
-const JobWizardPage = () => {
+const JobWizardPage = ({ location: { search } }) => {
+  const fills = URI.parseQuery(search);
   const title = __('Run job');
   const breadcrumbOptions = {
     breadcrumbItems: [
@@ -23,10 +26,16 @@ const JobWizardPage = () => {
           {title}
         </Title>
         <Divider component="div" />
-        <JobWizard />
+        <JobWizard fills={fills} />
       </React.Fragment>
     </PageLayout>
   );
+};
+
+JobWizardPage.propTypes = {
+  location: PropTypes.shape({
+    search: PropTypes.string,
+  }).isRequired,
 };
 
 export default JobWizardPage;

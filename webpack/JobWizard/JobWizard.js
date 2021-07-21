@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Wizard } from '@patternfly/react-core';
 import { get } from 'foremanReact/redux/API';
@@ -10,9 +11,10 @@ import { JOB_TEMPLATE } from './JobWizardConstants';
 import { selectTemplateError } from './JobWizardSelectors';
 import Schedule from './steps/Schedule/';
 import HostsAndInputs from './steps/HostsAndInputs/';
+import { useAutoFill } from './autofill';
 import './JobWizard.scss';
 
-export const JobWizard = () => {
+export const JobWizard = ({ fills }) => {
   const [jobTemplateID, setJobTemplateID] = useState(null);
   const [category, setCategory] = useState('');
 
@@ -62,6 +64,11 @@ export const JobWizard = () => {
     }
   }, [jobTemplateID, setDefaults, dispatch]);
 
+  useAutoFill({
+    fills,
+    setSelectedTargets,
+    setHostsSearchQuery,
+  });
   const templateError = !!useSelector(selectTemplateError);
   const isTemplate = !templateError && !!jobTemplateID;
   const steps = [
@@ -127,6 +134,13 @@ export const JobWizard = () => {
       className="job-wizard"
     />
   );
+};
+
+JobWizard.propTypes = {
+  fills: PropTypes.object,
+};
+JobWizard.defaultProps = {
+  fills: {},
 };
 
 export default JobWizard;

@@ -26,3 +26,4 @@ export const hostMethods = {
 
 export const hostQuerySearchID = 'hostsSearch';
 export const hostsController = 'hosts';
+export const HOST_IDS = 'HOST_IDS';
