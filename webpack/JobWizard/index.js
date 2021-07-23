@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import URI from 'urijs';
 import { Title, Divider } from '@patternfly/react-core';
@@ -7,7 +7,7 @@ import PageLayout from 'foremanReact/routes/common/PageLayout/PageLayout';
 import { JobWizard } from './JobWizard';
 
 const JobWizardPage = ({ location: { search } }) => {
-  const fills = URI.parseQuery(search);
+  const [fills, setFills] = useState(URI.parseQuery(search));
   const title = __('Run job');
   const breadcrumbOptions = {
     breadcrumbItems: [
@@ -26,7 +26,7 @@ const JobWizardPage = ({ location: { search } }) => {
           {title}
         </Title>
         <Divider component="div" />
-        <JobWizard fills={fills} />
+        <JobWizard fills={fills} setFills={setFills} />
       </React.Fragment>
     </PageLayout>
   );
