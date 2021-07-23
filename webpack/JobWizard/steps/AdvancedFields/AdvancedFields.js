@@ -17,6 +17,7 @@ import {
   ConcurrencyLevelField,
   TimeSpanLevelField,
   TemplateInputsFields,
+  ExecutionOrderingField,
 } from './Fields';
 import { DescriptionField } from './DescriptionField';
 
@@ -95,6 +96,14 @@ export const AdvancedFields = ({ advancedValues, setAdvancedValues }) => {
           setValue={newValue =>
             setAdvancedValues({
               timeSpan: newValue,
+            })
+          }
+        />
+        <ExecutionOrderingField
+          isRandomizedOrdering={advancedValues.isRandomizedOrdering}
+          setValue={newValue =>
+            setAdvancedValues({
+              isRandomizedOrdering: newValue,
             })
           }
         />

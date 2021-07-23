@@ -39,6 +39,7 @@ export const JobWizard = () => {
         timeoutToKill: execution_timeout_interval || '',
         templateValues: advancedTemplateValues,
         description: description_format || '',
+        isRandomizedOrdering: false,
       }));
     },
     []
