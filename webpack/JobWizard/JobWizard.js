@@ -5,6 +5,7 @@ import { Wizard } from '@patternfly/react-core';
 import { get } from 'foremanReact/redux/API';
 import { translate as __ } from 'foremanReact/common/I18n';
 import history from 'foremanReact/history';
+import { noop } from 'foremanReact/common/helpers';
 import CategoryAndTemplate from './steps/CategoryAndTemplate/';
 import { AdvancedFields } from './steps/AdvancedFields/AdvancedFields';
 import { JOB_TEMPLATE } from './JobWizardConstants';
@@ -14,7 +15,7 @@ import HostsAndInputs from './steps/HostsAndInputs/';
 import { useAutoFill } from './autofill';
 import './JobWizard.scss';
 
-export const JobWizard = ({ fills }) => {
+export const JobWizard = ({ fills, setFills }) => {
   const [jobTemplateID, setJobTemplateID] = useState(null);
   const [category, setCategory] = useState('');
 
@@ -29,6 +30,11 @@ export const JobWizard = ({ fills }) => {
   const dispatch = useDispatch();
 
   const setDefaults = useCallback(response => {
+    if (!category.length) {
+      setCategory(current =>
+        current.length ? current : response.data.job_template.job_category
+      );
+    }
     const responseJob = response.data;
     const advancedTemplateValues = {};
     const defaultTemplateValues = {};
@@ -44,7 +50,7 @@ export const JobWizard = ({ fills }) => {
         defaultTemplateValues[input.name] = input?.default || '';
       });
     }
-    setTemplateValues(defaultTemplateValues);
+    setTemplateValues(prev => ({ ...prev, defaultTemplateValues }));
     setAdvancedValues(currentAdvancedValues => ({
       ...currentAdvancedValues,
       effectiveUserValue: responseJob.effective_user?.value || '',
@@ -66,8 +72,11 @@ export const JobWizard = ({ fills }) => {
 
   useAutoFill({
     fills,
+    setFills,
     setSelectedTargets,
     setHostsSearchQuery,
+    setJobTemplateID,
+    setTemplateValues,
   });
   const templateError = !!useSelector(selectTemplateError);
   const isTemplate = !templateError && !!jobTemplateID;
@@ -80,6 +89,7 @@ export const JobWizard = ({ fills }) => {
           setJobTemplate={setJobTemplateID}
           category={category}
           setCategory={setCategory}
+          isFeature={!!fills.feature}
         />
       ),
     },
@@ -138,9 +148,11 @@ export const JobWizard = ({ fills }) => {
 
 JobWizard.propTypes = {
   fills: PropTypes.object,
+  setFills: PropTypes.func,
 };
 JobWizard.defaultProps = {
   fills: {},
+  setFills: noop,
 };
 
 export default JobWizard;

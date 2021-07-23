@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { fireEvent, screen, render, act } from '@testing-library/react';
 import * as api from 'foremanReact/redux/API';
 import { JobWizard } from '../../../JobWizard';
+import JobWizardPage from '../../../';
 import * as selectors from '../../../JobWizardSelectors';
 import { testSetup, mockApi } from '../../../__tests__/fixtures';
 
@@ -93,5 +94,32 @@ describe('Hosts', () => {
       fireEvent.click(screen.getByText('Target hosts and inputs'));
     });
     expect(screen.queryAllByText('os = gnome')).toHaveLength(1);
+  });
+
+  it('input fill from url', async () => {
+    const inputText = 'test text';
+    render(
+      <Provider store={store}>
+        <JobWizardPage
+          location={{
+            search: `feature=test_feature&inputs[plain hidden]=${inputText}`,
+          }}
+        />
+      </Provider>
+    );
+    api.get.mock.calls.forEach(call => {
+      if (call[0].key === 'REX_FEATURE') {
+        expect(call[0].url).toEqual(
+          '/api/remote_execution_features/test_feature'
+        );
+      }
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Target hosts and inputs'));
+    });
+    const textField = screen.getByLabelText('plain hidden', {
+      selector: 'textarea',
+    });
+    expect(textField.value).toBe(inputText);
   });
 });
