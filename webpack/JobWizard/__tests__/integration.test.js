@@ -18,7 +18,13 @@ selectors.selectJobTemplate.mockImplementation(() => {});
 
 api.get.mockImplementation(({ handleSuccess, ...action }) => {
   if (action.key === 'JOB_CATEGORIES') {
-    handleSuccess && handleSuccess({ data: { job_categories: jobCategories } });
+    handleSuccess &&
+      handleSuccess({
+        data: {
+          job_categories: jobCategories,
+          default_category: 'Ansible Commands',
+        },
+      });
   }
   return { type: 'get', ...action };
 });
