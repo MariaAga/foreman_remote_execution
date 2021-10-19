@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Form } from '@patternfly/react-core';
+import { Button, Form, FormGroup } from '@patternfly/react-core';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { ScheduleType } from './ScheduleType';
 import { RepeatOn } from './RepeatOn';
@@ -8,6 +8,7 @@ import { QueryType } from './QueryType';
 import { StartEndDates } from './StartEndDates';
 import { WIZARD_TITLES } from '../../JobWizardConstants';
 import { WizardTitle } from '../form/WizardTitle';
+import { AdvancedScheduling } from './AdvancedScheduling';
 
 const Schedule = ({ scheduleValue, setScheduleValue }) => {
   const {
@@ -19,8 +20,18 @@ const Schedule = ({ scheduleValue, setScheduleValue }) => {
     isNeverEnds,
     isFuture,
   } = scheduleValue;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <>
+      {isModalOpen && (
+        <AdvancedScheduling
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          scheduleValue={scheduleValue}
+          setScheduleValue={setScheduleValue}
+        />
+      )}
       <WizardTitle title={WIZARD_TITLES.schedule} />
       <Form className="schedule-tab">
         <ScheduleType
@@ -28,71 +39,69 @@ const Schedule = ({ scheduleValue, setScheduleValue }) => {
           setIsFuture={newValue => {
             if (!newValue) {
               // if schedule type is execute now
-              setScheduleValue(current => ({
-                ...current,
+              setScheduleValue({
                 starts: '',
-              }));
+              });
             }
-            setScheduleValue(current => ({
-              ...current,
+            setScheduleValue({
               isFuture: newValue,
-            }));
+            });
           }}
         />
 
-        <RepeatOn
-          repeatType={repeatType}
-          repeatData={repeatData}
-          setRepeatType={newValue => {
-            setScheduleValue(current => ({
-              ...current,
-              repeatType: newValue,
-            }));
-          }}
-          setRepeatData={newValue => {
-            setScheduleValue(current => ({
-              ...current,
-              repeatData: newValue,
-            }));
-          }}
-          repeatAmount={repeatAmount}
-          setRepeatAmount={newValue => {
-            setScheduleValue(current => ({
-              ...current,
-              repeatAmount: newValue,
-            }));
-          }}
-        />
+        <FormGroup label={__('Repeat On')}>
+          <RepeatOn
+            repeatType={repeatType}
+            repeatData={repeatData}
+            setRepeatType={newValue => {
+              setScheduleValue({
+                repeatType: newValue,
+              });
+            }}
+            setRepeatData={newValue => {
+              setScheduleValue({
+                repeatData: newValue,
+              });
+            }}
+            repeatAmount={repeatAmount}
+            setRepeatAmount={newValue => {
+              setScheduleValue({
+                repeatAmount: newValue,
+              });
+            }}
+          />
+        </FormGroup>
         <StartEndDates
           starts={starts}
           setStarts={newValue => {
             if (!isFuture) {
-              setScheduleValue(current => ({
-                ...current,
+              setScheduleValue({
                 isFuture: true,
-              }));
+              });
             }
-            setScheduleValue(current => ({
-              ...current,
+            setScheduleValue({
               starts: newValue,
-            }));
+            });
           }}
           ends={ends}
           setEnds={newValue => {
-            setScheduleValue(current => ({
-              ...current,
+            setScheduleValue({
               ends: newValue,
-            }));
+            });
           }}
           isNeverEnds={isNeverEnds}
           setIsNeverEnds={newValue => {
-            setScheduleValue(current => ({
-              ...current,
+            setScheduleValue({
               isNeverEnds: newValue,
-            }));
+            });
           }}
         />
-        <Button variant="link" className="advanced-scheduling-button" isInline>
+        <Button
+          variant="link"
+          className="advanced-scheduling-button"
+          isInline
+          onClick={() => setIsModalOpen(true)}
+        >
           {__('Advanced scheduling')}
         </Button>
         <QueryType />

@@ -4,7 +4,9 @@
   }
 
   .pf-c-wizard__nav.pf-m-expanded {
-    z-index: calc(var(--pf-c-wizard__footer--ZIndex) + 2); // So the small screen navigation can be shown above the select box
+    z-index: calc(
+      var(--pf-c-wizard__footer--ZIndex) + 2
+    ); // So the small screen navigation can be shown above the select box
   }
 
   .pf-c-wizard__main {
@@ -57,6 +59,44 @@
     }
   }
 
+  .pf-c-modal-box.advanced-schedule-modal {
+    width: auto;
+    #repeat-on {
+    // grid-template-columns: none;
+      .pf-c-form__group {
+        display: block;
+      }
+      .pf-c-select {
+        width: auto;
+      }
+    }
+    .radio-advanced-schedule {
+      margin-bottom: 1rem;
+
+      input[type='radio'] {
+        margin-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+      }
+    }
+
+    .radio-advanced-schedule .pf-c-form.pf-m-horizontal .pf-c-form__group,
+    #set-starts-at,
+    #set-starts-before {
+      grid-template-columns: 70px;
+    }
+
+    #set-ends-after .pf-c-form__group-control div {
+      display: grid;
+      grid-template-columns: 0.25fr 1fr;
+      grid-column-gap: 5px;
+      span {
+        padding-top: var(
+          --pf-c-form--m-horizontal__group-label--md--PaddingTop
+        );
+        margin: auto 0 auto 2px;
+      }
+    }
+  }
+
   .gray-text {
     color: var(--pf-global--Color--dark-200);
   }
@@ -81,24 +121,22 @@
       }
     }
   }
-  input[type='radio'],
-  input[type='checkbox'] {
-    margin: 0;
+
+  #repeat-on-weekly {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  #repeat-on-hourly  {
+    max-height: 300px;
+    overflow: scroll;
   }
   .schedule-tab {
     .advanced-scheduling-button {
       text-align: start;
     }
-    #repeat-on-weekly {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-    }
     .pf-l-grid {
       gap: var(--pf-c-form--GridGap);
-    }
-    #repeat-on-hourly{
-      max-height: 300px;
-      overflow: scroll;
     }
   }
 

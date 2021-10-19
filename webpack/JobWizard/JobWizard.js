@@ -139,7 +139,13 @@ export const JobWizard = () => {
       component: (
         <Schedule
           scheduleValue={scheduleValue}
-          setScheduleValue={setScheduleValue}
+          setScheduleValue={newValues => {
+            console.log({newValues})
+            setScheduleValue(currentAdvancedValues => ({
+              ...currentAdvancedValues,
+              ...newValues,
+            }));
+          }}
         />
       ),
       canJumpTo: isTemplate,

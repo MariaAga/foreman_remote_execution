@@ -52,42 +52,38 @@ export const RepeatOn = ({
     }
   };
   return (
-    <FormGroup label={__('Repeat On')}>
-      <Grid>
-        <GridItem span={6}>
-          <SelectField
-            fieldId="repeat-select"
-            options={Object.values(repeatTypes)}
-            setValue={newValue => {
-              setRepeatType(newValue);
-              if (newValue === repeatTypes.noRepeat) {
-                setRepeatValidated('default');
-              }
-            }}
-            value={repeatType}
+    <Grid id="repeat-on">
+      <GridItem span={6}>
+        <SelectField
+          fieldId="repeat-select"
+          options={Object.values(repeatTypes)}
+          setValue={newValue => {
+            setRepeatType(newValue);
+            if (newValue === repeatTypes.noRepeat) {
+              setRepeatValidated('default');
+            }
+          }}
+          value={repeatType}
+        />
+      </GridItem>
+      <GridItem span={1} />
+      <GridItem span={5}>
+        <FormGroup
+          helperTextInvalid={__('Repeat amount can only be a positive number')}
+          validated={repeatValidated}
+        >
+          <TextInput
+            isDisabled={repeatType === repeatTypes.noRepeat}
+            id="repeat-amount"
+            value={repeatAmount}
+            type="text"
+            onChange={newValue => handleRepeatInputChange(newValue)}
+            placeholder={__('Repeat N times')}
           />
-        </GridItem>
-        <GridItem span={1} />
-        <GridItem span={5}>
-          <FormGroup
-            helperTextInvalid={__(
-              'Repeat amount can only be a positive number'
-            )}
-            validated={repeatValidated}
-          >
-            <TextInput
-              isDisabled={repeatType === repeatTypes.noRepeat}
-              id="repeat-amount"
-              value={repeatAmount}
-              type="text"
-              onChange={newValue => handleRepeatInputChange(newValue)}
-              placeholder={__('Repeat N times')}
-            />
-          </FormGroup>
-        </GridItem>
-        {getRepeatComponent()}
-      </Grid>
-    </FormGroup>
+        </FormGroup>
+      </GridItem>
+      {getRepeatComponent()}
+    </Grid>
   );
 };
 
