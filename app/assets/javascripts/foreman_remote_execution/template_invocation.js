@@ -26,7 +26,9 @@ function refresh_execution_form(perform_description_reset) {
 
 function refresh_search_query(value){
   id = value.val;
-  $('textarea#targeting_search_query').val($('span#bookmark_query_map span#bookmark-' + id).data('query'));
+  $('#targeting_search input').val(
+    $('span#bookmark_query_map span#bookmark-' + id).data('query')
+  );
 }
 
 function show_preview_hosts_modal() {
@@ -66,11 +68,13 @@ function job_invocation_form_binds() {
 
   $('button#preview_hosts').on('click', show_preview_hosts_modal);
 
-  $('textarea#targeting_search_query').on('change', refresh_execution_form);
-
   $('select#targeting_bookmark_id').on('change', refresh_search_query);
 
   tfm.advancedFields.initAdvancedFields()
+
+  waitForElm('#targeting_search input').then(() => {
+    $('#targeting_search input').attr('name', 'targeting[search_query]');
+});
 }
 
 function delayed_refresh(url, data){
@@ -171,3 +175,23 @@ String.format = function (pattern, dict) {
   }
   return pattern;
 };
+
+function waitForElm(selector) {
+  return new Promise(resolve => {
+      if (document.querySelector(selector)) {
+          return resolve(document.querySelector(selector));
+      }
+
+      const observer = new MutationObserver(mutations => {
+          if (document.querySelector(selector)) {
+              resolve(document.querySelector(selector));
+              observer.disconnect();
+          }
+      });
+
+      observer.observe(document.body, {
+          childList: true,
+          subtree: true
+      });
+  });
+}
