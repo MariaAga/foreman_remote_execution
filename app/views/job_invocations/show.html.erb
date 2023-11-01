@@ -45,8 +45,11 @@
   <%= render_tab_content_for(:main_tabs, subject: @job_invocation) %>
 </div>
 
-<script id="job_invocation_refresh" data-refresh-url="<%= job_invocation_path(@job_invocation) %>">
-  <% if @auto_refresh %>
-    delayed_refresh($('script#job_invocation_refresh').data('refresh-url'), {});
-  <% end %>
-</script>
+<% content_for(:javascripts) do %>
+  <script id="job_invocation_refresh" data-refresh-url="<%= job_invocation_path(@job_invocation) %>">
+    <% if @auto_refresh %>
+      delayed_refresh($('script#job_invocation_refresh').data('refresh-url'), {});
+    <% end %>
+  </script>
+<% end %>
+
