@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import PropTypes from 'prop-types';
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import { Icon } from 'patternfly-react';
 import { translate as __ } from 'foremanReact/common/I18n';
 import { FormattedMessage } from 'react-intl';
@@ -20,14 +20,20 @@ import {
   useBulkSelect,
   useUrlParams,
 } from 'foremanReact/components/PF4/TableIndexPage/Table/TableHooks';
-import Pagination from 'foremanReact/components/Pagination';
 import { getControllerSearchProps } from 'foremanReact/constants';
 import Columns, {
   JOB_INVOCATION_HOSTS,
   STATUS_UPPERCASE,
 } from './JobInvocationConstants';
+import JobInvocationHostTableToolbar from './JobInvocationHostTableToolbar';
 
-const JobInvocationHostTable = ({ id, targeting, finished, autoRefresh }) => {
+const JobInvocationHostTable = ({
+  id,
+  targeting,
+  finished,
+  autoRefresh,
+  initialFilter,
+}) => {
   const columns = Columns();
   const columnNamesKeys = Object.keys(columns);
   const apiOptions = { key: JOB_INVOCATION_HOSTS };
@@ -39,6 +45,7 @@ const JobInvocationHostTable = ({ id, targeting, finished, autoRefresh }) => {
   const defaultParams = { search: urlSearchQuery };
   if (urlPage) defaultParams.page = Number(urlPage);
   if (urlPerPage) defaultParams.per_page = Number(urlPerPage);
+  const [selectedFilter, setSelectedFilter] = useState(initialFilter || '');
   const { response, status, setAPIOptions } = useAPI(
     'get',
     `/api/job_invocations/${id}/hosts`,
@@ -68,9 +75,21 @@ const JobInvocationHostTable = ({ id, targeting, finished, autoRefresh }) => {
     setAPIOptions: combinedResponse.setAPIOptions,
   });
 
-  const { updateSearchQuery } = useBulkSelect({
+  const { updateSearchQuery: updateSearchQueryBulk } = useBulkSelect({
     initialSearchQuery: urlSearchQuery,
   });
+  const updateSearchQuery = searchQuery => {
+    setParamsAndAPI({
+      ...apiOptions,
+      search: searchQuery,
+    });
+    setAPIOptions({
+      ...apiOptions,
+      params: { search: searchQuery },
+      search: constructFilter(),
+    });
+    updateSearchQueryBulk(searchQuery);
+  };
 
   const controller = 'hosts';
   const memoDefaultSearchProps = useMemo(
@@ -80,6 +99,34 @@ const JobInvocationHostTable = ({ id, targeting, finished, autoRefresh }) => {
   memoDefaultSearchProps.autocomplete.url = foremanUrl(
     `/${controller}/auto_complete_search`
   );
+
+  const constructFilter = () => {
+    const baseFilter = `job_invocation.id = ${id}`;
+    const dropdownFilterClause =
+      selectedFilter && selectedFilter !== 'all_statuses'
+        ? `and job_invocation.result = ${selectedFilter}`
+        : '';
+    const searchQueryClause = urlSearchQuery ? `and (${urlSearchQuery})` : '';
+    return `${baseFilter} ${dropdownFilterClause} ${searchQueryClause}`;
+  };
+
+  useEffect(() => {
+    const filterSearch = constructFilter();
+
+    setAPIOptions(prevOptions => {
+      if (prevOptions.params.search !== filterSearch) {
+        return {
+          ...prevOptions,
+          params: {
+            ...prevOptions.params,
+            search: filterSearch,
+          },
+        };
+      }
+      return prevOptions;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFilter, id, urlSearchQuery]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -98,24 +145,28 @@ const JobInvocationHostTable = ({ id, targeting, finished, autoRefresh }) => {
     };
   }, [finished, autoRefresh, setAPIOptions]);
 
+  useEffect(() => {
+    if (initialFilter) {
+      setSelectedFilter(initialFilter);
+    }
+  }, [initialFilter]);
+
   const onPagination = newPagination => {
     setParamsAndAPI({
       ...params,
       ...newPagination,
       search: urlSearchQuery,
     });
-  };
 
-  const bottomPagination = (
-    <Pagination
-      ouiaId="table-hosts-bottom-pagination"
-      key="table-bottom-pagination"
-      page={params.page}
-      perPage={params.perPage}
-      itemCount={response?.subtotal}
-      onChange={onPagination}
-    />
-  );
+    setAPIOptions(prevOptions => ({
+      ...prevOptions,
+      params: {
+        ...prevOptions.params,
+        ...newPagination,
+        search: constructFilter(),
+      },
+    }));
+  };
 
   const customEmptyState = (
     <Tr ouiaId="table-empty">
@@ -158,6 +209,13 @@ const JobInvocationHostTable = ({ id, targeting, finished, autoRefresh }) => {
       apiUrl=""
       apiOptions={apiOptions}
       customSearchProps={memoDefaultSearchProps}
+      customToolbarItems={
+        <JobInvocationHostTableToolbar
+          dropdownFilter={selectedFilter}
+          setDropdownFilter={setSelectedFilter}
+        />
+      }
+      customOnPagination={onPagination}
       controller="hosts"
       creatable={false}
       replacementResponse={combinedResponse}
@@ -172,7 +230,7 @@ const JobInvocationHostTable = ({ id, targeting, finished, autoRefresh }) => {
             : null
         }
         params={params}
-        setParams={setParamsAndAPI}
+        setParams={onPagination}
         itemCount={response?.subtotal}
         results={response?.results}
         url=""
@@ -184,7 +242,6 @@ const JobInvocationHostTable = ({ id, targeting, finished, autoRefresh }) => {
         }
         isPending={status === STATUS_UPPERCASE.PENDING}
         isDeleteable={false}
-        bottomPagination={bottomPagination}
       >
         {response?.results?.map((result, rowIndex) => (
           <Tr key={rowIndex} ouiaId={`table-row-${rowIndex}`}>
@@ -203,6 +260,7 @@ JobInvocationHostTable.propTypes = {
   targeting: PropTypes.object.isRequired,
   finished: PropTypes.bool.isRequired,
   autoRefresh: PropTypes.bool.isRequired,
+  initialFilter: PropTypes.string.isRequired,
 };
 
 JobInvocationHostTable.defaultProps = {};
