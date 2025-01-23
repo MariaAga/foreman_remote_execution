@@ -37,15 +37,28 @@ const JobInvocationHostTable = ({
   const columns = Columns();
   const columnNamesKeys = Object.keys(columns);
   const apiOptions = { key: JOB_INVOCATION_HOSTS };
+  const [selectedFilter, setSelectedFilter] = useState(initialFilter || '');
   const {
     searchParam: urlSearchQuery = '',
     page: urlPage,
     per_page: urlPerPage,
   } = useUrlParams();
-  const defaultParams = { search: urlSearchQuery };
+  const constructFilter = (
+    filter = selectedFilter,
+    search = urlSearchQuery
+  ) => {
+    const baseFilter = `job_invocation.id = ${id}`;
+    const dropdownFilterClause =
+      filter && filter !== 'all_statuses'
+        ? `and job_invocation.result = ${filter}`
+        : '';
+    const searchQueryClause = search ? `and (${search})` : '';
+    return `${baseFilter} ${dropdownFilterClause} ${searchQueryClause}`;
+  };
+
+  const defaultParams = { search: constructFilter() };
   if (urlPage) defaultParams.page = Number(urlPage);
   if (urlPerPage) defaultParams.per_page = Number(urlPerPage);
-  const [selectedFilter, setSelectedFilter] = useState(initialFilter || '');
   const { response, status, setAPIOptions } = useAPI(
     'get',
     `/api/job_invocations/${id}/hosts`,
@@ -54,40 +67,16 @@ const JobInvocationHostTable = ({
     }
   );
 
-  const combinedResponse = {
-    response: {
-      search: urlSearchQuery,
-      can_create: false,
-      results: response?.results || [],
-      total: response?.total || 0,
-      per_page: response?.perPage,
-      page: response?.page,
-      subtotal: response?.subtotal || 0,
-      message: response?.message || 'error',
-    },
-    status,
-    setAPIOptions,
-  };
-
-  const { setParamsAndAPI, params } = useSetParamsAndApiAndSearch({
+  const { params } = useSetParamsAndApiAndSearch({
     defaultParams,
     apiOptions,
-    setAPIOptions: combinedResponse.setAPIOptions,
+    setAPIOptions,
   });
 
   const { updateSearchQuery: updateSearchQueryBulk } = useBulkSelect({
     initialSearchQuery: urlSearchQuery,
   });
   const updateSearchQuery = searchQuery => {
-    setParamsAndAPI({
-      ...apiOptions,
-      search: searchQuery,
-    });
-    setAPIOptions({
-      ...apiOptions,
-      params: { search: searchQuery },
-      search: constructFilter(),
-    });
     updateSearchQueryBulk(searchQuery);
   };
 
@@ -100,19 +89,8 @@ const JobInvocationHostTable = ({
     `/${controller}/auto_complete_search`
   );
 
-  const constructFilter = () => {
-    const baseFilter = `job_invocation.id = ${id}`;
-    const dropdownFilterClause =
-      selectedFilter && selectedFilter !== 'all_statuses'
-        ? `and job_invocation.result = ${selectedFilter}`
-        : '';
-    const searchQueryClause = urlSearchQuery ? `and (${urlSearchQuery})` : '';
-    return `${baseFilter} ${dropdownFilterClause} ${searchQueryClause}`;
-  };
-
-  useEffect(() => {
-    const filterSearch = constructFilter();
-
+  const wrapSetSelectedFilter = filter => {
+    const filterSearch = constructFilter(filter);
     setAPIOptions(prevOptions => {
       if (prevOptions.params.search !== filterSearch) {
         return {
@@ -125,8 +103,8 @@ const JobInvocationHostTable = ({
       }
       return prevOptions;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFilter, id, urlSearchQuery]);
+    setSelectedFilter(filter);
+  };
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -145,27 +123,30 @@ const JobInvocationHostTable = ({
     };
   }, [finished, autoRefresh, setAPIOptions]);
 
-  useEffect(() => {
-    if (initialFilter) {
-      setSelectedFilter(initialFilter);
-    }
-  }, [initialFilter]);
-
-  const onPagination = newPagination => {
-    setParamsAndAPI({
-      ...params,
-      ...newPagination,
-      search: urlSearchQuery,
-    });
-
+  const wrapSetAPIOptions = newAPIOptions => {
     setAPIOptions(prevOptions => ({
       ...prevOptions,
       params: {
         ...prevOptions.params,
-        ...newPagination,
-        search: constructFilter(),
+        ...newAPIOptions.params,
+        search: constructFilter(undefined, newAPIOptions?.params?.search),
       },
     }));
+  };
+
+  const combinedResponse = {
+    response: {
+      search: urlSearchQuery,
+      can_create: false,
+      results: response?.results || [],
+      total: response?.total || 0,
+      per_page: response?.perPage,
+      page: response?.page,
+      subtotal: response?.subtotal || 0,
+      message: response?.message || 'error',
+    },
+    status,
+    setAPIOptions: wrapSetAPIOptions,
   };
 
   const customEmptyState = (
@@ -212,10 +193,9 @@ const JobInvocationHostTable = ({
       customToolbarItems={
         <JobInvocationHostTableToolbar
           dropdownFilter={selectedFilter}
-          setDropdownFilter={setSelectedFilter}
+          setDropdownFilter={wrapSetSelectedFilter}
         />
       }
-      customOnPagination={onPagination}
       controller="hosts"
       creatable={false}
       replacementResponse={combinedResponse}
@@ -230,7 +210,7 @@ const JobInvocationHostTable = ({
             : null
         }
         params={params}
-        setParams={onPagination}
+        setParams={wrapSetAPIOptions}
         itemCount={response?.subtotal}
         results={response?.results}
         url=""
